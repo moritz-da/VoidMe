@@ -1,3 +1,81 @@
-# MAD1
+<img align="right" src="./VoidMe_Logo.png" alt="VoidMe Logo" width="200"/>
 
-Assignments & Project
+#    **VoidMe**
+
+**Members:**
+
+- _[Moritz Dallendörfer](https://gitlab.mi.hdm-stuttgart.de/md139)_
+- _[Benedict Lang](https://gitlab.mi.hdm-stuttgart.de/bl042)_
+
+**Group:**
+
+_HdM Stuttgart_
+
+_Mobile Application Developement 1- Dozenten: [Andreas Gawelczyk](https://gitlab.mi.hdm-stuttgart.de/gawelczyk)_, [Matthias Nagel](https://gitlab.mi.hdm-stuttgart.de/nagel)
+
+___
+
+# _About this Project_ #
+**Last Updated: November, 11st 2021**
+
+VoidMe is a simple Android app that allows you to blacklist specific locations and to add them into a SQLight database. To accomplish this, you create a new entry at the current location that certain people or vehicles should avoid. One chooses a suitable category, adds a short description and the location is stored in the database with the entered information and coordinates.
+Furthermore, the entries can be displayed vividly.
+
+___
+
+# _Quick Overview_ #
+
+
+**Note:** _Coming soon..._
+
+## Categories
+
+- busy places (Überfüllte Orte)
+- dark alleys (Dunkle Gassen)
+- narrow streets (Schmale Straßen)
+- poor accessibility (Schlechte Barrierefreiheit)
+- danger of slipping (Rutschgefahr)
+
+## Features
+
+* [x] Location & Sensors:
+  * GPS/Galileo
+* [x] Data Storage:
+  * App local data storage with SQLight
+
+
+## Dependencies
+```haml
+
+```
+
+
+## Legals ##
+
+***
+``` 
+ - Program name:    VoidMe
+ - Description:     Location Tracker for categorized blacklisting of locations that should be avoided. 
+ - Version:         1.0.0      
+ - Date:            11/22/2021
+ - Authors:         Benedict Lang, Moritz Dallendörfer
+ - Contact:         bl042@hdm-stuttgart.de, md139@hdm-stuttgart.de
+ - Copyright:       © 2021 HdM University of Applied Sciences, Lang, Dallendörfer                       
+ - License:         MIT-License
+                                                                                                   
+   Permission is hereby granted, free of charge, to any person obtaining a copy of the Software     
+   and the accompanying documentation is granted permission to use code in parts but not entirely,  
+   including the right to use, copy, modify, merge, publish, distribute and/or sublicense it and    
+   to provide such rights to persons to whom such software is furnished,                            
+   subject to the following conditions:
+                         
+   The above copyright notice and this permission notice shall be included in all copies or partial 
+   copies of the Software.
+   The software is provided "as is" without warranty of any kind, either express or implied,        
+   including, but not limited to, the warranty of merchantability, fitness for a particular         
+   purpose, or non-infringement.
+   
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY DAMAGES OR OTHER CLAIMS,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING IN CONNECTION WITH THE SOFTWARE 
+OR ANY OTHER USE OF THE SOFTWARE.
+```
