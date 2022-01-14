@@ -1,0 +1,58 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/styles_header">
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_round_nights_stay_24"
+            app:key="@string/dark_mode_key"
+            app:title="@string/dark_mode_title"
+            app:summaryOff="@string/dark_mode_summary_off"
+            app:summaryOn="@string/dark_mode_summary_on"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/location_header">
+
+        <ListPreference
+            android:icon="@drawable/ic_round_gps_fixed_24"
+            app:defaultValue="precise"
+            app:entries="@array/precision_entries"
+            app:entryValues="@array/precision_values"
+            app:key="@string/gps_precision_key"
+            app:title="@string/gps_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/about_header">
+
+        <EditTextPreference
+
+            android:icon="@drawable/ic_round_architecture_24"
+            android:summary="@string/contributors_summary"
+            app:key="@string/contributors_key"
+            app:title="@string/contributors_title" />
+
+        <EditTextPreference
+            android:icon="@drawable/ic_round_copyright_24"
+            android:summary="@string/license_summary"
+            app:key="@string/license_key"
+            app:title="@string/license_title" />
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/legals_header">
+
+        <EditTextPreference
+            android:icon="@drawable/ic_round_fingerprint_24"
+            android:summary="@string/privacy_summary"
+            app:key="@string/privacy_key"
+            app:title="@string/privacy_title" />
+
+        <EditTextPreference
+            android:icon="@drawable/ic_round_contact_support_24"
+            android:summary="@string/contact_summary"
+            app:key="@string/contact_key"
+            app:title="@string/contact_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

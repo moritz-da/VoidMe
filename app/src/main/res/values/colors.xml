@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#c51641</color>
+    <color name="primaryAlt">#CD4265</color>
+
+    <color name="text">#292c42</color>
+    <color name="textAlt">#8d8f97</color>
+    <color name="textDark">#FFFFFF</color>
+    <color name="textAltDark">#8d8f97</color>
+
+    <color name="background">#FFFFFF</color>
+    <color name="backgroundDark">#292c42</color>
+    <color name="backgroundNavDark">#181A27</color>
+
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
+

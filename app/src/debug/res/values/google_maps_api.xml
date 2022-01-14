@@ -1,0 +1,26 @@
+<resources>
+    <!--
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    de.hdmstuttgart.voidme.ui.maptest
+
+    SHA-1 certificate fingerprint:
+    DA:CE:FD:AB:0A:C7:BD:C2:A2:E7:CC:50:F0:BE:38:A7:19:45:EA:26
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <!--
+                 The API key for Google Maps-based APIs is defined as a string resource.
+                 (See the file "res/values/google_maps_api.xml").
+                 Note that the API key is linked to the encryption key used to sign the APK.
+                 You need a different API key for each encryption key, including the release key that is used to
+                 sign the APK for publishing.
+                 You can define the keys for the debug and release targets in src/debug/ and src/release/.
+            -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCuCkH-lE2n1hK0USgyAr7x_VyIfNJrmGQ</string>
+</resources>

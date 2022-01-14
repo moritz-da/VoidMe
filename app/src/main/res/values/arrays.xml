@@ -1,0 +1,12 @@
+<resources>
+    <!-- GPS Preference -->
+    <string-array name="precision_entries">
+        <item>Precise</item>
+        <item>Power Save</item>
+    </string-array>
+
+    <string-array name="precision_values">
+        <item>precise</item>
+        <item>un_precise</item>
+    </string-array>
+</resources>

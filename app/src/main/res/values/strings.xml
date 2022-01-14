@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">VoidMe</string>
+    <!-- Home -->
+    <string name="settings_button">Settings Button</string>
+
+
+
+    <!-- Navbar -->
+    <string name="title_home">Home</string>
+    <string name="title_map">Map</string>
+    <string name="title_settings">Notifications</string>
+
+    <!-- Preferences -->
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="styles_header">Styling</string>
+        <!-- DarkMode Preferences -->
+        <string name="dark_mode_title">Dark mode</string>
+        <string name="dark_mode_summary_on">Contrast mode turned on</string>
+        <string name="dark_mode_summary_off">Contrast mode deactivated</string>
+        <string name="dark_mode_key">dark_mode</string>
+
+    <string name="location_header">Location</string>
+        <!-- DarkMode Preferences -->
+        <string name="gps_title">GPS Precision</string>
+        <string name="gps_precision_key">gps_precision</string>
+
+    <string name="about_header">About</string>
+        <!-- License Preferences -->
+        <string name="license_title">Licenses</string>
+        <string name="license_summary">Dependencies, Open Source Licenses</string>
+        <string name="license_key">license</string>
+        <!-- Contributors Preferences -->
+        <string name="contributors_title">Developers</string>
+        <string name="contributors_summary">Our Crew behind VoidMe</string>
+        <string name="contributors_key">contributors</string>
+
+    <string name="legals_header">Legals</string>
+        <!-- Privacy Preferences -->
+        <string name="privacy_title">Privacy Policy</string>
+        <string name="privacy_summary">How we deal with your data</string>
+        <string name="privacy_key">privacy</string>
+        <!-- Contact Preferences -->
+        <string name="contact_title">Contact</string>
+        <string name="contact_summary">Hints and Support</string>
+        <string name="contact_key">contact</string>
+    <!-- XX -->
+</resources>
