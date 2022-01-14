@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setTheme(sharedPreferences);
+
+
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -55,13 +58,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         //TODO
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    private void setTheme(SharedPreferences sharedPreferences) {
         if (sharedPreferences.getBoolean(getString(R.string.dark_mode_key), true)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+    }
+
+
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        setTheme(sharedPreferences);
     }
 
     @Override

@@ -6,9 +6,9 @@
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_round_nights_stay_24"
             app:key="@string/dark_mode_key"
-            app:title="@string/dark_mode_title"
             app:summaryOff="@string/dark_mode_summary_off"
-            app:summaryOn="@string/dark_mode_summary_on"/>
+            app:summaryOn="@string/dark_mode_summary_on"
+            app:title="@string/dark_mode_title" />
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/location_header">
@@ -25,34 +25,47 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/about_header">
 
-        <EditTextPreference
+        <Preference
 
             android:icon="@drawable/ic_round_architecture_24"
             android:summary="@string/contributors_summary"
             app:key="@string/contributors_key"
-            app:title="@string/contributors_title" />
+            app:title="@string/contributors_title">
 
-        <EditTextPreference
+        </Preference>
+
+        <Preference
             android:icon="@drawable/ic_round_copyright_24"
             android:summary="@string/license_summary"
             app:key="@string/license_key"
-            app:title="@string/license_title" />
+            app:title="@string/license_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                />
+        </Preference>
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/legals_header">
 
-        <EditTextPreference
+        <Preference
             android:icon="@drawable/ic_round_fingerprint_24"
             android:summary="@string/privacy_summary"
             app:key="@string/privacy_key"
-            app:title="@string/privacy_title" />
-
-        <EditTextPreference
+            app:title="@string/privacy_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                />
+        </Preference>
+        <Preference
             android:icon="@drawable/ic_round_contact_support_24"
             android:summary="@string/contact_summary"
             app:key="@string/contact_key"
-            app:title="@string/contact_title" />
-
+            app:title="@string/contact_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://gitlab.mi.hdm-stuttgart.de/mad-android/ws21/bl042/-/tree/master/project"
+                />
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>
