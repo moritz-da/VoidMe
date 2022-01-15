@@ -25,37 +25,38 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/about_header">
 
-        <Preference
-
+        <PreferenceScreen
             android:icon="@drawable/ic_round_architecture_24"
             android:summary="@string/contributors_summary"
             app:key="@string/contributors_key"
             app:title="@string/contributors_title">
 
-        </Preference>
+        </PreferenceScreen>
 
-        <Preference
+        <PreferenceScreen
             android:icon="@drawable/ic_round_copyright_24"
             android:summary="@string/license_summary"
             app:key="@string/license_key"
             app:title="@string/license_title">
-            <intent
-                android:action="android.intent.action.VIEW"
-                />
-        </Preference>
+
+        </PreferenceScreen>
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/legals_header">
 
-        <Preference
+        <PreferenceScreen
             android:icon="@drawable/ic_round_fingerprint_24"
             android:summary="@string/privacy_summary"
-            app:key="@string/privacy_key"
+            android:key="@string/privacy_key"
             app:title="@string/privacy_title">
-            <intent
-                android:action="android.intent.action.VIEW"
-                />
-        </Preference>
+
+            <Preference
+                android:icon="@drawable/ic_round_contact_support_24"
+                android:summary="@string/contact_summary"
+                app:key="test"
+                app:title="@string/contact_title"/>
+
+        </PreferenceScreen>
         <Preference
             android:icon="@drawable/ic_round_contact_support_24"
             android:summary="@string/contact_summary"
@@ -66,6 +67,6 @@
                 android:data="https://gitlab.mi.hdm-stuttgart.de/mad-android/ws21/bl042/-/tree/master/project"
                 />
         </Preference>
-    </PreferenceCategory>
 
+    </PreferenceCategory>
 </PreferenceScreen>

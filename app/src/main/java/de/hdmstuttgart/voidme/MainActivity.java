@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         //setSupportActionBar(toolbar);
 
         Objects.requireNonNull(getSupportActionBar()).hide();
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        //BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_map, R.id.navigation_settings)
@@ -46,11 +46,22 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setupPermissions();
     }
 
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.dark_mode_key)))setTheme(sharedPreferences);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         setTheme(sharedPreferences);
-
-
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -66,17 +77,4 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        setTheme(sharedPreferences);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
 }
