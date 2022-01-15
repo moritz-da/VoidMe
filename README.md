@@ -44,8 +44,42 @@ ___
   * App local data storage with SQLight
 
 
-## Dependencies
-```haml
+## Configuration & Dependencies
+
+| Module | Version |
+| ------ | ------ |
+| Gradle | v7.0.2 |
+| Android Gradle Plugin | v7.0.4 |
+| Android CompileSdk| 31 |
+| Android MinSdk | 23 |
+| Android TargetSdk | 31 |
+
+```javascript
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+
+    implementation 'androidx.room:room-runtime:2.4.1'
+    annotationProcessor 'androidx.room:room-compiler:2.4.1'
+
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+}
 
 ```
 
