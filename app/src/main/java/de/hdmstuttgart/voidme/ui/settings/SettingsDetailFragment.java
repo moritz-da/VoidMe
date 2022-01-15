@@ -23,6 +23,13 @@ public class SettingsDetailFragment extends SettingsFragment {
     private FragmentNotificationsBinding binding;
     private SharedPreferences sharedPreferences;
 
+    /**
+     * <strong>Factory method that sets attributes and builds dynamically new SettingsDetailFragments.</strong>
+     * Fragments are created depending on their preference key of the PreferenceScreen to use as the
+     * root of the preference hierarchy that is going to be loaded.
+     * @param preferenceScreen A container that represents the settings screen or a preferences sub-screen.
+     * @return Instance of SettingsDetailFragment.
+     */
     public static Fragment getInstance(@NonNull PreferenceScreen preferenceScreen) {
         SettingsDetailFragment fragment = new SettingsDetailFragment();
         Bundle args = new Bundle();
