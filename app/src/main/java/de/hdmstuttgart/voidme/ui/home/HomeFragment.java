@@ -1,14 +1,16 @@
 package de.hdmstuttgart.voidme.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -19,19 +21,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.core.app.NavUtils;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.util.Objects;
-
-import de.hdmstuttgart.voidme.MainActivity;
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
-import de.hdmstuttgart.voidme.database.Location;
+import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.databinding.FragmentHomeBinding;
 import de.hdmstuttgart.voidme.ui.settings.SettingsActivity;
 
@@ -40,6 +42,16 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "-HOME-";
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
+
+    private static final int PERMISSIONS_FINE_LOCATION = 99;
+    public static final int DEFAULT_UPDATE_INTERVAL = 30;
+    public static final int FAST_UPDATE_INTERVAL = 5;
+    public static final boolean USE_GPS_SENSOR = false;
+
+    // Googles API for location services
+    FusedLocationProviderClient fusedLocationProviderClient;
+
+    LocationRequest locationRequest;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +63,26 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
+
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        String precisionSetting = sharedPreferences.getString(getString(R.string.gps_precision_key), "precise");
+        if (USE_GPS_SENSOR) {
+            // most accurate -> use GPS
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        }
+        else {
+            // towers and wifi
+            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        }
+
+
+
         return root;
     }
 
@@ -94,7 +126,15 @@ public class HomeFragment extends Fragment {
                         Log.i(TAG, "Saving new Entry...");
                         SeekBar severity = (SeekBar)bottomSheetDialog.findViewById(R.id.severityLevel);
                         //TODO
-                        DbManager.voidLocation.locationDao().insert(new Location(
+
+
+
+                        updateGPS();
+
+
+
+
+                        DbManager.voidLocation.locationDao().insert(new LocationEntity(
                                 "Title",
                                 "Description",
                                 category.getSelectedItem().toString(),
@@ -120,5 +160,64 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch(requestCode) {
+            case PERMISSIONS_FINE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    updateGPS();
+                }
+                else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // TODO: Call MainActivity.setupPermissions();
+                }
+                else {
+                    Toast.makeText(getActivity(), "This app requires permission to be granted in order to work properly", Toast.LENGTH_SHORT).show();
+                    requireActivity().finish();
+                }
+        }
+    }
+
+    private void updateGPS() {
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // permissions granted
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    updateLocationValues(location);
+                }
+            });
+        }
+        else {
+            // permissions not granted yet
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION );
+            }
+        }
+    }
+
+    private void updateLocationValues(Location location) {
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
+        double accuracy = location.getAccuracy();
+        double altitude;
+        if (location.hasAltitude()) {
+            altitude = location.getAltitude();
+        }
+        else {
+            altitude = -1;
+        }
+
+        Log.d(TAG, "latitude: " + lat);
+        Log.d(TAG, "longitude: " + lon);
+        Log.d(TAG, "accuracy: " + accuracy);
+        Log.d(TAG, "altitude: " + altitude);
     }
 }

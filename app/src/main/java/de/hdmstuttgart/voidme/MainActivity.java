@@ -1,15 +1,22 @@
 package de.hdmstuttgart.voidme;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.Objects;
 
@@ -17,6 +24,8 @@ import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final int PERMISSIONS_FINE_LOCATION = 99;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void setupPermissions() {
         //TODO
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION );
+            }
+        }
     }
 
     private void setTheme(SharedPreferences sharedPreferences) {
