@@ -27,7 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
-import de.hdmstuttgart.voidme.database.Location;
+import de.hdmstuttgart.voidme.database.LocationEntity;
 
 public class MapFragment extends Fragment {
 
@@ -95,7 +95,7 @@ public class MapFragment extends Fragment {
                         Log.i(TAG, "Saving new Entry...");
                         SeekBar severity = (SeekBar)bottomSheetDialog.findViewById(R.id.severityLevel);
                         //TODO
-                        DbManager.voidLocation.locationDao().insert(new Location(
+                        DbManager.voidLocation.locationDao().insert(new LocationEntity(
                                 "Title",
                                 "Description",
                                 category.getSelectedItem().toString(),
