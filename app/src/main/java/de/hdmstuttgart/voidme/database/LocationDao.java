@@ -10,18 +10,18 @@ import java.util.List;
 @Dao
 public interface LocationDao {
 
-    @Query("SELECT * FROM Location")
-    List<Location> getAll();
+    @Query("SELECT * FROM LocationEntity")
+    List<LocationEntity> getAll();
 
-    @Query("SELECT uid FROM Location WHERE title LIKE :title;")
+    @Query("SELECT uid FROM LocationEntity WHERE title LIKE :title;")
     List<Integer> getLocationId(String title);
 
-    @Query("SELECT * FROM Location WHERE title LIKE :title;")
-    List<Location> searchLocation(String title);
+    @Query("SELECT * FROM LocationEntity WHERE title LIKE :title;")
+    List<LocationEntity> searchLocation(String title);
 
     @Insert
-    void insert(Location location);
+    void insert(LocationEntity location);
 
     @Delete
-    void delete(Location location);
+    void delete(LocationEntity location);
 }

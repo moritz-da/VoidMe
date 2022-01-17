@@ -1,13 +1,12 @@
 package de.hdmstuttgart.voidme.database;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
 @Entity
-public class Location {
+public class LocationEntity {
 
     @PrimaryKey(autoGenerate = true)
     public int uid;
@@ -30,7 +29,7 @@ public class Location {
 
     public int Severity;
 
-    public Location(String Title, String Description, String Category, String Latitude, String Longitude, String Altitude, String Accuracy, String Address, int Severity) {
+    public LocationEntity(String Title, String Description, String Category, String Latitude, String Longitude, String Altitude, String Accuracy, String Address, int Severity) {
         this.Title = Title;
         this.Description = Description;
         this.Category = Category;
@@ -85,7 +84,7 @@ public class Location {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
+        LocationEntity location = (LocationEntity) o;
         return Title.equals(location.Title) && Latitude.equals(location.Latitude) && Longitude.equals(location.Longitude);
     }
 
