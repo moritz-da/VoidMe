@@ -1,15 +1,10 @@
 package de.hdmstuttgart.voidme;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.TaskStackBuilder;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,6 +13,7 @@ import androidx.preference.PreferenceManager;
 
 import java.util.Objects;
 
+import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         //BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_map, R.id.navigation_settings)
+                R.id.navigation_home, R.id.navigation_map, R.id.navigation_location_list)
                 .build();
         final NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         final NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
@@ -44,12 +40,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         setupSharedPreferences();
         setupPermissions();
+        if (DbManager.voidLocation == null) {
+            DbManager.initDb(this);
+        }
     }
 
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.dark_mode_key)))setTheme(sharedPreferences);
+        if (key.equals(getString(R.string.dark_mode_key))) setTheme(sharedPreferences);
     }
 
     @Override

@@ -1,14 +1,14 @@
-package de.hdmstuttgart.voidme.ui.notifications;
+package de.hdmstuttgart.voidme.ui.location_list;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class LocationListViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public LocationListViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

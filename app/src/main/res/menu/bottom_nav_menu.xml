@@ -11,8 +11,8 @@
         android:icon="@drawable/ic_round_home_24"
         android:title="@string/title_home" />
     <item
-        android:id="@+id/navigation_settings"
+        android:id="@+id/navigation_location_list"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_settings" />
+        android:title="@string/title_location_list" />
 
 </menu>

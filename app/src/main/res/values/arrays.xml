@@ -9,4 +9,19 @@
         <item>precise</item>
         <item>un_precise</item>
     </string-array>
+
+    <string-array name="categories_array">
+        <item>Busy Place</item>
+        <item>Dark Alley</item>
+        <item>Narrow Street</item>
+        <item>Poor Accessibility</item>
+        <item>Danger of Slipping</item>
+        <item>High Bullying Area</item>
+        <item>Drunkards</item>
+        <item>Hijacking</item>
+        <item>Gangs</item>
+        <item>Theft</item>
+        <item>Drugs</item>
+        <item>Unsafe</item>
+    </string-array>
 </resources>

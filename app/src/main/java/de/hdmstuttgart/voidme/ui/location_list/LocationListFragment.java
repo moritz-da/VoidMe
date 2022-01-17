@@ -1,4 +1,4 @@
-package de.hdmstuttgart.voidme.ui.notifications;
+package de.hdmstuttgart.voidme.ui.location_list;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,21 +14,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import de.hdmstuttgart.voidme.databinding.FragmentNotificationsBinding;
 
-public class NotificationsFragment extends Fragment {
+public class LocationListFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
+    private LocationListViewModel locationListViewModel;
     private FragmentNotificationsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        locationListViewModel =
+                new ViewModelProvider(this).get(LocationListViewModel.class);
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        locationListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

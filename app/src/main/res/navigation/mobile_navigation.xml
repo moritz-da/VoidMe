@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_map" />
 
     <fragment
-        android:id="@+id/navigation_settings"
-        android:name="de.hdmstuttgart.voidme.ui.notifications.NotificationsFragment"
-        android:label="@string/title_settings"
+        android:id="@+id/navigation_location_list"
+        android:name="de.hdmstuttgart.voidme.ui.location_list.LocationListFragment"
+        android:label="@string/title_location_list"
         tools:layout="@layout/fragment_notifications" />
 </navigation>

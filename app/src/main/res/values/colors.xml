@@ -10,6 +10,7 @@
 
     <color name="background">#FFFFFF</color>
     <color name="backgroundDark">#292c42</color>
+    <color name="backgroundAltDark">#181A27</color>
     <color name="backgroundNavDark">#181A27</color>
 
 

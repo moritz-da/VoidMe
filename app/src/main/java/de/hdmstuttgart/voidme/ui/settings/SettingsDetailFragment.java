@@ -18,9 +18,6 @@ public class SettingsDetailFragment extends PreferenceFragment implements ISetti
     private static final String TAG = "-PREF-";
     public static String FRAGMENT_TAG;
 
-    //private FragmentNotificationsBinding binding;
-    //private SharedPreferences sharedPreferences;
-
     @Override
     public String getFragmentTag() {
         return FRAGMENT_TAG;

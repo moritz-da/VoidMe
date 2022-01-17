@@ -61,6 +61,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         //getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
+
+
     @Override
     public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, @NonNull PreferenceScreen preferenceScreen) {
         //TODO Bug: need to press twice to switch
