@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.util.Objects;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
@@ -124,26 +127,20 @@ public class HomeFragment extends Fragment {
                 if (saveBtn != null) {
                     saveBtn.setOnClickListener(v2 -> {
                         Log.i(TAG, "Saving new Entry...");
-                        SeekBar severity = (SeekBar)bottomSheetDialog.findViewById(R.id.severityLevel);
-                        //TODO
-
-
-
-                        updateGPS();
-
-
-
+                        SeekBar severity = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.severityLevel));
+                        EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
+                        EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
+                        Location location = Objects.requireNonNull(updateGPS()); //TODO change origin later
 
                         DbManager.voidLocation.locationDao().insert(new LocationEntity(
-                                "Title",
-                                "Description",
+                                title.getText().toString(),
+                                description.getText().toString(),
                                 category.getSelectedItem().toString(),
-                                "latitude",
-                                "longitude",
-                                "altitude",
-                                "accuracy",
-                                "address",
-                                severity != null ? severity.getProgress() : 0
+                                location.getLatitude(),
+                                location.getLongitude(),
+                                location.getAltitude(),
+                                location.getAccuracy(),
+                                severity.getProgress()
                         ));
                         Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
                         Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
@@ -181,38 +178,33 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void updateGPS() {
+    private Location updateGPS() {
+        final Location[] currentLocation = new Location[1];
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // permissions granted
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    updateLocationValues(location);
-                }
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+                updateLocationValues(location);
+                currentLocation[0] = location;
             });
         }
         else {
             // permissions not granted yet
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION );
             }
         }
+        return currentLocation[0];
     }
 
     private void updateLocationValues(Location location) {
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         double accuracy = location.getAccuracy();
-        double altitude;
+        double altitude = -1;
         if (location.hasAltitude()) {
             altitude = location.getAltitude();
-        }
-        else {
-            altitude = -1;
         }
 
         Log.d(TAG, "latitude: " + lat);
@@ -221,3 +213,16 @@ public class HomeFragment extends Fragment {
         Log.d(TAG, "altitude: " + altitude);
     }
 }
+
+/*
+Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+String city = addresses.get(0).getLocality();
+String state = addresses.get(0).getAdminArea();
+String country = addresses.get(0).getCountryName();
+String postalCode = addresses.get(0).getPostalCode();
+String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+* */

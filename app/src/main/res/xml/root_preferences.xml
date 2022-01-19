@@ -56,7 +56,7 @@
                 android:key="test_key"
                 android:persistent="false"
                 android:selectable="false"
-                android:summary="Multi line description\ncan go here. Multi line desnnnnnnnnnnnnnnnncription\ncan go here. Multi line descrnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnniption\n nnnnnnnncan go here. Multi line description\ncan go here. Multi line description\ncan go here."
+                android:summary=""
                 android:title="you can omit the title" />
 
         </PreferenceScreen>

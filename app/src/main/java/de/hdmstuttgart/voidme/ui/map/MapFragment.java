@@ -45,8 +45,7 @@ public class MapFragment extends Fragment {
             LatLng stuttgartHdM = new LatLng(	48.741400, 9.100630);
             googleMap.addMarker(new MarkerOptions().position(stuttgartHdM).title("Hochschule der Medien, Stuttgart"));
             //googleMap.moveCamera(CameraUpdateFactory.newLatLng(stuttgart));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stuttgartHdM, 10));
-
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stuttgartHdM, 14));
         }
     };
 
@@ -69,51 +68,6 @@ public class MapFragment extends Fragment {
 
         //Add location dialog
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
-        if (addBtn != null) {
-            addBtn.setOnClickListener(v -> {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
-                        this.requireActivity(),
-                        R.style.SheetDialog
-                );
-                bottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.new_entry_bottom_sheet, view.findViewById(R.id.addLocation_bottomSheet_container));
-
-                Spinner category = bottomSheetView.findViewById(R.id.categorySelector);
-                ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
-                        this.getContext(),
-                        R.array.categories_array,
-                        R.layout.spinner_color
-                );
-
-                arrayAdapter.setDropDownViewResource(R.layout.spinner_color_dropdown_layout);
-                category.setAdapter(arrayAdapter);
-
-                //Save and close on click
-                View saveBtn = bottomSheetView.findViewById(R.id.saveNewLocation);
-                if (saveBtn != null) {
-                    saveBtn.setOnClickListener(v2 -> {
-                        Log.i(TAG, "Saving new Entry...");
-                        SeekBar severity = (SeekBar)bottomSheetDialog.findViewById(R.id.severityLevel);
-                        //TODO
-                        DbManager.voidLocation.locationDao().insert(new LocationEntity(
-                                "Title",
-                                "Description",
-                                category.getSelectedItem().toString(),
-                                "latitude",
-                                "longitude",
-                                "altitude",
-                                "accuracy",
-                                "address",
-                                severity != null ? severity.getProgress() : 0
-                        ));
-                        Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
-                        Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
-                        bottomSheetDialog.dismiss();
-                    });
-                }
-                bottomSheetDialog.setContentView(bottomSheetView);
-                bottomSheetDialog.show();
-            });
-        }
+        //TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
     }
 }

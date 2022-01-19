@@ -1,11 +1,15 @@
 package de.hdmstuttgart.voidme.database;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-@Entity
+@Entity(indices = {@Index(value = {"category", "latitude", "longitude"},
+        unique = true)})
 public class LocationEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -15,21 +19,22 @@ public class LocationEntity {
 
     public String Description;
 
+    @ColumnInfo(name = "category")
     public String Category;
 
-    public String Latitude;
+    @ColumnInfo(name = "latitude")
+    public double Latitude;
 
-    public String Longitude;
+    @ColumnInfo(name = "longitude")
+    public double Longitude;
 
-    public String Altitude;
+    public double Altitude;
 
-    public String Accuracy;
-
-    public String Address;
+    public float Accuracy;
 
     public int Severity;
 
-    public LocationEntity(String Title, String Description, String Category, String Latitude, String Longitude, String Altitude, String Accuracy, String Address, int Severity) {
+    public LocationEntity(String Title, String Description, String Category, double Latitude, double Longitude, double Altitude, float Accuracy, int Severity) {
         this.Title = Title;
         this.Description = Description;
         this.Category = Category;
@@ -37,55 +42,39 @@ public class LocationEntity {
         this.Longitude = Longitude;
         this.Altitude = Altitude;
         this.Accuracy = Accuracy;
-        this.Address = Address;
         this.Severity = Severity;
-    }
-
-
-    public String getAltitude() {
-        return Altitude;
     }
 
     public String getTitle() {
         return Title;
     }
 
-    public String getCategory() {
-        return Category;
-    }
-
-    public String getLatitude() {
-        return Latitude;
-    }
-
-    public String getLongitude() {
-        return Longitude;
-    }
-
     public String getDescription() {
         return Description;
     }
 
-    public String getAccuracy() {
-        return Accuracy;
+    public String getCategory() {
+        return Category;
     }
 
-    public String getAddress() {
-        return Address;
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public double getLongitude() {
+        return Longitude;
+    }
+
+    public double getAltitude() {
+        return Altitude;
+    }
+
+    public float getAccuracy() {
+        return Accuracy;
     }
 
     public int getSeverity() {
         return Severity;
-    }
-
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LocationEntity location = (LocationEntity) o;
-        return Title.equals(location.Title) && Latitude.equals(location.Latitude) && Longitude.equals(location.Longitude);
     }
 
     @Override
@@ -93,9 +82,10 @@ public class LocationEntity {
         return Objects.hash(Title, Latitude, Longitude);
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "Location{" +
+        return "LocationEntity{" +
                 "Title='" + Title + '\'' +
                 ", Description='" + Description + '\'' +
                 ", Category='" + Category + '\'' +
@@ -103,7 +93,6 @@ public class LocationEntity {
                 ", Longitude='" + Longitude + '\'' +
                 ", Altitude='" + Altitude + '\'' +
                 ", Accuracy='" + Accuracy + '\'' +
-                ", Address='" + Address + '\'' +
                 ", Severity=" + Severity +
                 '}';
     }

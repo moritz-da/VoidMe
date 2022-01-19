@@ -5,15 +5,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import de.hdmstuttgart.voidme.R;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class SettingsDetailFragment extends PreferenceFragment implements ISettingsFragment {
+import de.hdmstuttgart.voidme.R;
+import de.hdmstuttgart.voidme.database.DbManager;
+import de.hdmstuttgart.voidme.database.LocationEntity;
+
+public class SettingsDetailFragment extends PreferenceFragment implements ISettingsFragment, Preference.OnPreferenceClickListener {
 
     private static final String TAG = "-PREF-";
     public static String FRAGMENT_TAG;
@@ -60,5 +66,35 @@ public class SettingsDetailFragment extends PreferenceFragment implements ISetti
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         //setPreferencesFromResource(R.xml.root_preferences, FRAGMENT_TAG);
         Log.d(TAG, "onCreatePreferences of the sub screen " + rootKey);
+    }
+
+    @Override
+    public boolean onPreferenceClick (Preference preference) {
+        if(preference.getKey().equals(getString(R.string.reset_db_key))) {
+            DbManager.voidLocation.locationDao().deleteAll();
+            Toast.makeText(getContext(), R.string.reset_db_toast, Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if(preference.getKey().equals(getString(R.string.db_dummy_key))) {
+            int x = 10;
+            for (int i = 0; i < x; i++) {
+                String[] catArr = getResources().getStringArray(R.array.categories_array);
+                LocationEntity dummy = new LocationEntity(
+                        "Dummy " + i,
+                        "This is the description of Dummy number " + i + " which is a dummy location, suitable for VoidMe.",
+                        catArr[ThreadLocalRandom.current().nextInt(0, catArr.length + 1)],
+                        (ThreadLocalRandom.current().nextDouble(48.5000, 48.9999 + 1)),
+                        ThreadLocalRandom.current().nextDouble(9.0, 9.4000 + 1),
+                        0,
+                        10,
+                        ThreadLocalRandom.current().nextInt(0, 3 + 1)
+                );
+                DbManager.voidLocation.locationDao().insert(dummy);
+            }
+            Toast.makeText(getContext(), R.string.db_dummy_toast, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Saving dummy Entries..." + DbManager.voidLocation.locationDao().getAll().toString());
+            return true;
+        }
+        return false;
     }
 }

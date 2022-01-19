@@ -56,10 +56,12 @@
             <string name="reset_db_key">reset_db</string>
             <string name="reset_db_title">Reset Database</string>
             <string name="reset_db_summary">Reset the added locations database</string>
+            <string name="reset_db_toast">Database has been reset.</string>
 
             <string name="db_dummy_title">Load Dummy Database</string>
             <string name="db_dummy_summary">Initialize the database with samples</string>
             <string name="db_dummy_key">dummy_db</string>
+            <string name="db_dummy_toast">Dummy database has been loaded.</string>
     <string name="testing">Testing</string>
     <string name="bugs_key">bugs</string>
     <string name="bugs_title">Bugs and Reports</string>

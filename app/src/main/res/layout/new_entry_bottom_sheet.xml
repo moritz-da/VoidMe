@@ -90,7 +90,7 @@
 
                 <EditText
                     style="@style/InputField"
-                    android:id="@+id/text3"
+                    android:id="@+id/locationDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.75"
