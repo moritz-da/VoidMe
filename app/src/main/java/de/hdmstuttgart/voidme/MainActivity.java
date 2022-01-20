@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -14,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,9 +24,11 @@ import java.util.Objects;
 
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.databinding.ActivityMainBinding;
+import de.hdmstuttgart.voidme.location.LocationService;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final String TAG = "-MAIN-";
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
     @Override
@@ -58,6 +62,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.dark_mode_key))) setTheme(sharedPreferences);
+
+        // TODO: Move this to LocationService and call it before each location request.
+        if(key.equals(getString(R.string.gps_precision_key))) {
+            if (sharedPreferences.getString("gps_precision", "precise").equals("precise")) {
+                LocationService.getInstance().setUseHighPrecision(true);
+                Log.d(TAG, "Use gps (high precision)");
+            }
+            else {
+                LocationService.getInstance().setUseHighPrecision(false);
+                Log.d(TAG, "Use towers+wifi (lower precision)");
+            }
+        }
     }
 
     @Override
@@ -76,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void setupPermissions() {
         //TODO
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION );
             }
         }

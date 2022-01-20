@@ -4,6 +4,7 @@ import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCU
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -17,6 +18,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import de.hdmstuttgart.voidme.R;
+
 public class LocationService {
 
     private static LocationService instance;
@@ -25,7 +28,7 @@ public class LocationService {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 5;
-    private static final boolean USE_GPS_SENSOR = true;
+    private boolean useHighPrecision = true;
 
     private Activity activityTemp;
     private Location locationTemp;
@@ -52,7 +55,7 @@ public class LocationService {
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
 
         // TODO: Get information from settings
-        if (USE_GPS_SENSOR) {
+        if (useHighPrecision) {
             // most accurate -> use GPS
             locationRequest.setPriority(PRIORITY_HIGH_ACCURACY);
         } else {
@@ -82,6 +85,7 @@ public class LocationService {
                         Log.d(TAG, "2. Lat: " + location.getLatitude());
                         Log.d(TAG, "2. Alt: " + location.getAltitude());
                         Log.d(TAG, "2. Acc: " + location.getAccuracy());
+                        Log.d(TAG, "2. precision high? " + useHighPrecision);
                     }
                 }
             });
@@ -99,5 +103,9 @@ public class LocationService {
         activityTemp = activity;
         locationRequest();
         return locationTemp;
+    }
+
+    public void setUseHighPrecision(boolean useHighPrecision) {
+        this.useHighPrecision = useHighPrecision;
     }
 }
