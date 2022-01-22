@@ -10,7 +10,8 @@ public class DialogFactory {
     static Dialog create(int kind) {
         switch (kind) {
             case LOCATION_ENTRY_DIALOG:
-                return
+                return new LocationEntryDialog(//TODO);
+            default:return null;
         }
     }
 }

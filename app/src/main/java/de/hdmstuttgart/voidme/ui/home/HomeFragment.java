@@ -64,10 +64,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-
+       homeViewModel.startTracking();
 
         locationRequest = new LocationRequest();
         locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
@@ -83,9 +80,6 @@ public class HomeFragment extends Fragment {
             // towers and wifi
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         }
-
-
-
         return root;
     }
 
@@ -132,19 +126,23 @@ public class HomeFragment extends Fragment {
                         EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
                         Location location = Objects.requireNonNull(updateGPS()); //TODO change origin later
 
-                        DbManager.voidLocation.locationDao().insert(new LocationEntity(
-                                title.getText().toString(),
-                                description.getText().toString(),
-                                category.getSelectedItem().toString(),
-                                location.getLatitude(),
-                                location.getLongitude(),
-                                location.getAltitude(),
-                                location.getAccuracy(),
-                                severity.getProgress()
-                        ));
-                        Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
-                        Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
-                        bottomSheetDialog.dismiss();
+                        if(title.getText().toString().isEmpty() || title.getText().toString().length()<10) {
+                            Toast.makeText(getContext(), R.string.not_saved_new_location, Toast.LENGTH_SHORT).show();
+                        } else {
+                            DbManager.voidLocation.locationDao().insert(new LocationEntity(
+                                    title.getText().toString(),
+                                    description.getText().toString(),
+                                    category.getSelectedItem().toString(),
+                                    location.getLatitude(),
+                                    location.getLongitude(),
+                                    location.getAltitude(),
+                                    location.getAccuracy(),
+                                    severity.getProgress()
+                            ));
+                            Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
+                            Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
+                            bottomSheetDialog.dismiss();
+                        }
                     });
                 }
                 bottomSheetDialog.setContentView(bottomSheetView);
@@ -211,9 +209,13 @@ public class HomeFragment extends Fragment {
         Log.d(TAG, "longitude: " + lon);
         Log.d(TAG, "accuracy: " + accuracy);
         Log.d(TAG, "altitude: " + altitude);
+
+        homeViewModel.getLatitude().observe(getViewLifecycleOwner(), binding.latitude::setText);
+        homeViewModel.getLongitude().observe(getViewLifecycleOwner(), binding.longitude::setText);
+        homeViewModel.getAltitude().observe(getViewLifecycleOwner(), binding.altitude::setText);
+        homeViewModel.getAccuracy().observe(getViewLifecycleOwner(), binding.accuracy::setText);
     }
 }
-
 /*
 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 

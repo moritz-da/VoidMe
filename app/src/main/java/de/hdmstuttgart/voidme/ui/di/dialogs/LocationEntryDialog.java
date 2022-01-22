@@ -1,4 +1,3 @@
-/*
 package de.hdmstuttgart.voidme.ui.di.dialogs;
 
 import android.app.Activity;
@@ -14,6 +13,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Objects;
@@ -24,20 +25,19 @@ import de.hdmstuttgart.voidme.database.LocationEntity;
 
 public class LocationEntryDialog {
     private static final String TAG = LocationEntryDialog.class.toString();
-    private View addBtn;
-    private View view;
-    private Context context;
-    private Activity activity;
+    private final View view;
+    private final Context context;
+    private final Activity activity;
 
 
-    public LocationEntryDialog(View addBtn, View view, Context context, Activity activity) {
-        this.addBtn = addBtn;
+    public LocationEntryDialog(@NonNull View view, @NonNull Context context, @NonNull Activity activity) {
         this.view = view;
+        this.context = context;
+        this.activity = activity;
     }
 
 
     void locationEntryHandler() {
-        addBtn.setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
                     activity,
                     R.style.SheetDialog
@@ -83,7 +83,5 @@ public class LocationEntryDialog {
             }
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
-        });
     }
 }
-*/
