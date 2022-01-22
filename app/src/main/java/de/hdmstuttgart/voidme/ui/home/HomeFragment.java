@@ -95,7 +95,8 @@ public class HomeFragment extends Fragment {
                         EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
                         EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
 
-                        Location location = new Location(LocationService.getInstance().getLocation(getActivity()));
+                        //Location location = new Location(LocationService.getInstance().getLocation(getActivity()));
+                        Location location = LocationService.getInstance().getLocation(getActivity());
                         // first system statement
                         Log.d(TAG, "1. Lon: " + location.getLongitude());
                         Log.d(TAG, "1. Lat: " + location.getLatitude());
@@ -115,6 +116,7 @@ public class HomeFragment extends Fragment {
                         DbManager.voidLocation.locationDao().insert(locationEntity);
 
                         Log.d(TAG, "...Entry saved" + locationEntity);
+                        Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
                         Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
                         bottomSheetDialog.dismiss();
                     });

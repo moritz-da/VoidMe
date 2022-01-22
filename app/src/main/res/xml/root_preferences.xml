@@ -87,9 +87,6 @@
                     android:persistent="false"
                     app:key="@string/reset_db_key"
                     app:title="@string/reset_db_title">
-                    <intent
-                        android:action="android.intent.action.VIEW"
-                        android:data="https://gitlab.mi.hdm-stuttgart.de/mad-android/ws21/bl042/-/tree/master/project" />
                 </Preference>
 
                 <Preference
@@ -98,9 +95,6 @@
                     android:persistent="false"
                     app:key="@string/db_dummy_key"
                     app:title="@string/db_dummy_title">
-                    <intent
-                        android:action="android.intent.action.VIEW"
-                        android:data="https://gitlab.mi.hdm-stuttgart.de/mad-android/ws21/bl042/-/tree/master/project" />
                 </Preference>
 
             </PreferenceCategory>

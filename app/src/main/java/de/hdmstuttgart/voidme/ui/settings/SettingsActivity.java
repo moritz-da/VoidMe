@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
@@ -45,7 +46,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             }
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            //ft.addToBackStack(SettingsFragment.FRAGMENT_TAG);
             ft.replace(R.id.settings, fragment, SettingsFragment.FRAGMENT_TAG);
             ft.commit();
         }
@@ -64,7 +64,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     @Override
     public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, @NonNull PreferenceScreen preferenceScreen) {
-        //TODO Bug: need to press twice to switch
         Log.d(TAG, "onPreferenceStartScreen: " + preferenceScreen.getKey());
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(DEV_UNLOCK, false)) {

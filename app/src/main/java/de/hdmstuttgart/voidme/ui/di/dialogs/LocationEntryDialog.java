@@ -64,7 +64,7 @@ public class LocationEntryDialog {
                     SeekBar severity = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.severityLevel));
                     EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
                     EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
-                    Location location = Objects.requireNonNull(updateGPS()); //TODO change origin later
+                    Location location = new Location(LocationService.getInstance().getLocation(getActivity())); //TODO change origin later
 
                     DbManager.voidLocation.locationDao().insert(new LocationEntity(
                             title.getText().toString(),

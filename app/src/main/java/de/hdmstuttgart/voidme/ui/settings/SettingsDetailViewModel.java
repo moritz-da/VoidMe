@@ -1,3 +1,4 @@
+/*
 package de.hdmstuttgart.voidme.ui.settings;
 
 import androidx.lifecycle.LiveData;
@@ -8,13 +9,15 @@ public class SettingsDetailViewModel extends ViewModel {
     private String targetContextKey;
     private MutableLiveData<String> mText;
 
-    /*
+    */
+/*
     implements SettingsFragment.OpenFragmentListener
     @Override
     public void putOnOpenFragment(String key) {
 
         targetContextKey = key;
-    }*/
+    }*//*
+
 
 
 
@@ -27,4 +30,4 @@ public class SettingsDetailViewModel extends ViewModel {
         return mText;
     }
     // TODO: Implement the ViewModel
-}
+}*/
