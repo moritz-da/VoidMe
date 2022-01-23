@@ -10,14 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
-
-import java.util.Objects;
 
 import de.hdmstuttgart.voidme.R;
 
@@ -39,14 +34,14 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
         //create fragment only on first call
         if (savedInstanceState == null) {
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(SettingsFragment.FRAGMENT_TAG);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(PreferencesFragment.FRAGMENT_TAG);
             if (fragment == null) {
                 Log.d(TAG, "Fragment not found by tag, creating new.");
-                fragment = new SettingsFragment();
+                fragment = new PreferencesFragment();
             }
 
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings, fragment, SettingsFragment.FRAGMENT_TAG);
+            ft.replace(R.id.settings, fragment, PreferencesFragment.FRAGMENT_TAG);
             ft.commit();
         }
         actionBar = getSupportActionBar();
@@ -84,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(preferenceScreen.getKey())
-                .replace(R.id.settings, SettingsDetailFragment.newInstance(preferenceScreen), preferenceScreen.getKey())
+                .replace(R.id.settings, PreferencesDetailFragment.newInstance(preferenceScreen), preferenceScreen.getKey())
                 .commit();
         return true;
     }

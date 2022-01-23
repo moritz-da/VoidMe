@@ -19,6 +19,9 @@ public interface LocationDao {
     @Query("SELECT * FROM LocationEntity WHERE title LIKE :title;")
     List<LocationEntity> searchLocation(String title);
 
+    @Query("SELECT * FROM LocationEntity WHERE category LIKE :category;")
+    List<LocationEntity> searchCategory(String category);
+
     @Query("DELETE FROM LocationEntity;")
     void deleteAll();
 

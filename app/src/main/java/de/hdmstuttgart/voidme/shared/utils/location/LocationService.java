@@ -1,10 +1,9 @@
-package de.hdmstuttgart.voidme.location;
+package de.hdmstuttgart.voidme.shared.utils.location;
 
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -18,14 +17,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import de.hdmstuttgart.voidme.R;
+import de.hdmstuttgart.voidme.shared.exceptions.PermissionDeniedException;
 
 public class LocationService {
 
     private static LocationService instance;
 
     private static final String TAG = "-HOME-";
-    private static final int PERMISSIONS_FINE_LOCATION = 99;
+    public static final int PERMISSIONS_FINE_LOCATION = 99;
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 5;
     private boolean useHighPrecision = true;
@@ -64,7 +63,7 @@ public class LocationService {
         }
     }
 
-    private void locationRequest() {
+    private void locationRequest() throws PermissionDeniedException {
         setup();
 
         if (locationTemp == null) {
@@ -90,15 +89,16 @@ public class LocationService {
                 }
             });
         } else {
-            Log.d(TAG, "location not saved");
+            Log.e(TAG, "Can not get location!");
             // permissions not granted yet
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
                 activityTemp.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
             }
+            throw new PermissionDeniedException("User denied location permission");
         }
     }
 
-    public Location getLocation(Activity activity) {
+    public Location getLocation(Activity activity) throws PermissionDeniedException {
         Log.d(TAG, "getLocation called");
         activityTemp = activity;
         locationRequest();

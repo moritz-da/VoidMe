@@ -17,6 +17,8 @@
         <item name="android:navigationBarColor" tools:targetApi="l">@color/backgroundNavDark</item>
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/text</item>
+        <item name="android:windowBackground">@color/backgroundAlt</item>
+        <item name="android:colorBackgroundFloating">@color/backgroundAlt</item>
 
 
 

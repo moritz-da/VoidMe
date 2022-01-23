@@ -12,7 +12,7 @@ import androidx.preference.PreferenceFragmentCompat;
 /**
  * Abstract class defines base settings of preference fragment screens.
  */
-public abstract class PreferenceFragment extends PreferenceFragmentCompat implements ISettingsFragment{
+public abstract class PreferenceFragment extends PreferenceFragmentCompat implements IPreferencesFragment {
     public abstract String getFragmentTag();
 
     @Override

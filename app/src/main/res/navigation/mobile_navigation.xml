@@ -21,5 +21,5 @@
         android:id="@+id/navigation_location_list"
         android:name="de.hdmstuttgart.voidme.ui.location_list.LocationListFragment"
         android:label="@string/title_location_list"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_location_list" />
 </navigation>

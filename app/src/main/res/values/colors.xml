@@ -9,8 +9,9 @@
     <color name="textAltDark">#8d8f97</color>
 
     <color name="background">#FFFFFF</color>
+    <color name="backgroundAlt">#F5F5F5</color>
     <color name="backgroundDark">#292c42</color>
-    <color name="backgroundAltDark">#181A27</color>
+    <color name="backgroundAltDark">#1E2031</color>
     <color name="backgroundNavDark">#181A27</color>
 
 

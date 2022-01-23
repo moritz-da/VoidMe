@@ -1,6 +1,8 @@
 package de.hdmstuttgart.voidme.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,12 +32,14 @@ import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.databinding.FragmentHomeBinding;
-import de.hdmstuttgart.voidme.location.LocationService;
+import de.hdmstuttgart.voidme.shared.exceptions.PermissionDeniedException;
+import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 import de.hdmstuttgart.voidme.ui.settings.SettingsActivity;
 
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "-HOME-";
+    public static final int PERMISSIONS_FINE_LOCATION = 99;
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
 
@@ -94,31 +98,42 @@ public class HomeFragment extends Fragment {
                         SeekBar severity = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.severityLevel));
                         EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
                         EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
-
+                        try {
                         //Location location = new Location(LocationService.getInstance().getLocation(getActivity()));
-                        Location location = LocationService.getInstance().getLocation(getActivity());
+                        LocationService locationService = LocationService.getInstance();
+                        Location location = locationService.getLocation(getActivity());
                         // first system statement
                         Log.d(TAG, "1. Lon: " + location.getLongitude());
                         Log.d(TAG, "1. Lat: " + location.getLatitude());
                         Log.d(TAG, "1. Alt: " + location.getAltitude());
                         Log.d(TAG, "1. Acc: " + location.getAccuracy());
 
-                        LocationEntity locationEntity = new LocationEntity(
-                                title.getText().toString(),
-                                description.getText().toString(),
-                                category.getSelectedItem().toString(),
-                                location.getLatitude(),
-                                location.getLongitude(),
-                                location.getAltitude(),
-                                location.getAccuracy(),
-                                severity.getProgress()
-                        );
-                        DbManager.voidLocation.locationDao().insert(locationEntity);
 
-                        Log.d(TAG, "...Entry saved" + locationEntity);
-                        Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
+                            LocationEntity locationEntity = new LocationEntity(
+                                    title.getText().toString(),
+                                    description.getText().toString(),
+                                    category.getSelectedItem().toString(),
+                                    location.getLatitude(),
+                                    location.getLongitude(),
+                                    location.getAltitude(),
+                                    location.getAccuracy(),
+                                    severity.getProgress()
+                            );
+
+                        DbManager.voidLocation.locationDao().insert(locationEntity);
                         Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "New entry saved " + locationEntity);
                         bottomSheetDialog.dismiss();
+                        } catch (SQLiteConstraintException ex) {
+                            Log.e(TAG, "Entry not saved!", ex);
+                            Toast.makeText(getContext(), R.string.location_exists, Toast.LENGTH_LONG).show();
+                        } catch (PermissionDeniedException permEx) {
+                            Log.e(TAG, "Entry not saved!", permEx);
+                            Toast.makeText(getContext(), R.string.location_permission_denied, Toast.LENGTH_LONG).show();
+                            // TODO request permission
+                            this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+                        }
+                        Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
                     });
                 }
                 bottomSheetDialog.setContentView(bottomSheetView);
@@ -133,24 +148,25 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        switch(requestCode) {
-//            case PERMISSIONS_FINE_LOCATION:
-//                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    updateGPS();
-//                }
-//                else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-//                    // TODO: Call MainActivity.setupPermissions();
-//                }
-//                else {
-//                    Toast.makeText(getActivity(), "This app requires permission to be granted in order to work properly", Toast.LENGTH_SHORT).show();
-//                    requireActivity().finish();
-//                }
-//        }
-//    }
+/*    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch(requestCode) {
+            case LocationService.PERMISSIONS_FINE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getActivity(), "Permission FineLoc", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // TODO: Call MainActivity.setupPermissions();
+                }
+                else {
+                    Toast.makeText(getActivity(), "This app requires permission to be granted in order to work properly", Toast.LENGTH_SHORT).show();
+                    requireActivity().finish();
+                }
+        }
+    }*/
 
 }
 

@@ -13,14 +13,13 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 
-public class SettingsDetailFragment extends PreferenceFragment implements ISettingsFragment {
+public class PreferencesDetailFragment extends PreferenceFragment implements IPreferencesFragment {
 
     private static final String TAG = "-PREF-";
     public static String FRAGMENT_TAG;
@@ -37,8 +36,8 @@ public class SettingsDetailFragment extends PreferenceFragment implements ISetti
      * @param preferenceScreen A container that represents the settings screen or a preferences sub-screen.
      * @return Instance of SettingsDetailFragment.
      */
-    public static SettingsDetailFragment newInstance(@NonNull PreferenceScreen preferenceScreen) {
-        SettingsDetailFragment fragment = new SettingsDetailFragment();
+    public static PreferencesDetailFragment newInstance(@NonNull PreferenceScreen preferenceScreen) {
+        PreferencesDetailFragment fragment = new PreferencesDetailFragment();
         Bundle args = new Bundle();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, preferenceScreen.getKey());
         fragment.setArguments(args);

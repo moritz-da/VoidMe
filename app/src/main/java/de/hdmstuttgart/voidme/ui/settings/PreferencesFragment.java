@@ -3,20 +3,14 @@ package de.hdmstuttgart.voidme.ui.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import de.hdmstuttgart.voidme.R;
-import de.hdmstuttgart.voidme.database.DbManager;
-import de.hdmstuttgart.voidme.database.LocationEntity;
 
-public class SettingsFragment extends PreferenceFragment implements ISettingsFragment {
+public class PreferencesFragment extends PreferenceFragment implements IPreferencesFragment {
 
     public final static String FRAGMENT_TAG = "settings";
     private SharedPreferences sharedPreferences;

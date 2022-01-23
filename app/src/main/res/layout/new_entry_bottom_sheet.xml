@@ -18,12 +18,12 @@
     <FrameLayout
         android:id="@+id/addLocation_bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="750dp"
         android:layout_marginTop="50dp"
         android:background="@drawable/bg_nav"
         android:backgroundTint="#131520"
         android:paddingBottom="70dp"
-        app:behavior_peekHeight="600dp"
+        app:behavior_peekHeight="800dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
@@ -67,13 +67,16 @@
                     android:ems="10"
                     android:hint="Name of the Location"
                     android:minHeight="48dp"
-                    android:textColor="@color/textDark" />
+                    android:textColor="@color/textDark"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:maxLength="35"/>
 
             </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="40dp"
                 android:layout_weight="0.25" />
 
             <LinearLayout
@@ -97,13 +100,15 @@
                     android:ems="10"
                     android:hint="Give a short description"
                     android:minHeight="48dp"
-                    android:textColor="@color/textDark" />
+                    android:textColor="@color/textDark"
+                    android:maxLines="4"
+                    android:maxLength="85"/>
             </LinearLayout>
 
             <Space
                 android:id="@+id/space"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="40dp"
                 android:layout_weight="0.25" />
 
             <LinearLayout
@@ -133,7 +138,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="40dp"
                 android:layout_weight="0.25" />
 
             <LinearLayout
@@ -162,12 +167,11 @@
                     android:textColor="@color/textDark"
                     android:tickMarkTint="@color/textAlt" />
 
-
             </LinearLayout>
 
             <Space
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="70dp"
             android:layout_weight="0.25" />
 
             <LinearLayout
@@ -182,7 +186,8 @@
                     android:layout_weight="0.25"
                     android:switchMinWidth="48dp"
                     android:text="Notify if close by"
-                    android:textColor="@color/textDark" />
+                    android:textColor="@color/textAltDark"
+                    android:enabled="false" />
             </LinearLayout>
 
             <Space

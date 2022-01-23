@@ -46,6 +46,8 @@ public class MapFragment extends Fragment {
             googleMap.addMarker(new MarkerOptions().position(stuttgartHdM).title("Hochschule der Medien, Stuttgart"));
             //googleMap.moveCamera(CameraUpdateFactory.newLatLng(stuttgart));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stuttgartHdM, 14));
+            // todo https://developer.android.com/training/location/permissions#background
+            // if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
         }
     };
 
@@ -69,5 +71,14 @@ public class MapFragment extends Fragment {
         //Add location dialog
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
         //TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //stop location updates
+
     }
 }

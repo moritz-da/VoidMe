@@ -3,7 +3,6 @@ package de.hdmstuttgart.voidme;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,16 +14,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
-
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.Objects;
 
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.databinding.ActivityMainBinding;
-import de.hdmstuttgart.voidme.location.LocationService;
+import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         setupSharedPreferences();
-        setupPermissions();
+        requestPermissions();
         if (DbManager.voidLocation == null) {
             DbManager.initDb(this);
         }
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
-    private void setupPermissions() {
+    public void requestPermissions() {
         //TODO
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
