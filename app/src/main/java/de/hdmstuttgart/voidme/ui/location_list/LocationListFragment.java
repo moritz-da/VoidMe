@@ -60,7 +60,6 @@ public class LocationListFragment extends Fragment {
         EditText input = view.findViewById(R.id.searchLocation);
         ImageButton btn = view.findViewById(R.id.btnSearchTitle);
         btn.setOnClickListener(v -> search(input.getText().toString()));
-
     }
 
     @Override

@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
+import de.hdmstuttgart.voidme.database.di.DummyFactory;
 
 public class PreferencesDetailFragment extends PreferenceFragment implements IPreferencesFragment {
 
@@ -73,23 +74,7 @@ public class PreferencesDetailFragment extends PreferenceFragment implements IPr
         Preference dummyDB = findPreference(getString(R.string.db_dummy_key));
         if (dummyDB != null) {
             dummyDB.setOnPreferenceClickListener(preference -> {
-                int x = 10;
-                for (int i = 0; i < x; i++) {
-                    String[] catArr = getResources().getStringArray(R.array.categories_array);
-                    LocationEntity dummy = new LocationEntity(
-                            "Dummy " + i,
-                            "This is the description of Dummy number " + i + " which is a dummy location, suitable for VoidMe.",
-                            catArr[ThreadLocalRandom.current().nextInt(0, catArr.length)],
-                            (ThreadLocalRandom.current().nextDouble(48.5000, 48.9999 + 1)),
-                            ThreadLocalRandom.current().nextDouble(9.0, 9.4000 + 1),
-                            0,
-                            10,
-                            ThreadLocalRandom.current().nextInt(0, 3 + 1)
-                    );
-                    DbManager.voidLocation.locationDao().insert(dummy);
-                }
-                Toast.makeText(getContext(), R.string.db_dummy_toast, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Saving dummy Entries..." + DbManager.voidLocation.locationDao().getAll().toString());
+                new DummyFactory(10, getContext(), getResources()).createDummies();
                 return true;
             });
         }
