@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.databinding.ActivityMainBinding;
-import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -59,14 +58,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.dark_mode_key))) setTheme(sharedPreferences);
 
-        // TODO: Move this to LocationService and call it before each location request.
+        // TODO: Move this to SaveEntryTask and call it before each location request.
         if(key.equals(getString(R.string.gps_precision_key))) {
             if (sharedPreferences.getString("gps_precision", "precise").equals("precise")) {
-                LocationService.getInstance().setUseHighPrecision(true);
+                //LocationService.getInstance().setUseHighPrecision(true);
                 Log.d(TAG, "Use gps (high precision)");
             }
             else {
-                LocationService.getInstance().setUseHighPrecision(false);
+                //LocationService.getInstance().setUseHighPrecision(false);
                 Log.d(TAG, "Use towers+wifi (lower precision)");
             }
         }

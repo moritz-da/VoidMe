@@ -1,4 +1,7 @@
-package de.hdmstuttgart.voidme.shared.utils.location;
+
+// Is not really needed anymore
+
+/*package de.hdmstuttgart.voidme.shared.utils.location;
 
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
@@ -109,3 +112,4 @@ public class LocationService {
         this.useHighPrecision = useHighPrecision;
     }
 }
+ */
