@@ -33,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,6 +45,7 @@ import java.util.List;
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
+import de.hdmstuttgart.voidme.shared.utils.ui.DrawHelper;
 
 public class MapFragment extends Fragment {
 
@@ -116,15 +118,20 @@ public class MapFragment extends Fragment {
                 MarkerOptions voidLocation = new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getTitle()).snippet(l.getDescription());
                 //TODO snippet includes category name, severity level, address of close location
                 switch (l.getSeverity()) {
-                    case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50.0f)); break;
-                    case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)); break;
-                    case 3: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)); break;
+                    case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50.0f));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50.0f), 20); break;
+                    case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_ORANGE), 28);break;
+                    case 3: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), 35);break;
                     case 0:
-                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_AZURE), 10);
                 }
                 //TODO change marker icons or design for each category, color needs to be changeable see -> https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
+
                 Marker marker = googleMap.addMarker(voidLocation);
                 if (marker != null)marker.setVisible(false);
+
                 markerList.add(marker);
             }
             MarkerOptions newMarker = new MarkerOptions().position(DEFAULT_LOCATION).title("Hochschule der Medien, Stuttgart");
@@ -147,6 +154,7 @@ public class MapFragment extends Fragment {
 
             // TODO https://developer.android.com/training/location/permissions#background
             // if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+            // https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers
         }
     };
 
@@ -166,10 +174,23 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateLocationUI();
         if (locationPermissionGranted) {
-            updateLocationUI();
             getDeviceLocation();
         }
+    }
+
+    private void drawCircle(LatLng point, int color, int radius){
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(point);
+        circleOptions.radius(radius);
+        circleOptions.strokeColor(color);
+        circleOptions.strokeWidth(2);
+        // Fill color of the circle, set to 40%
+        circleOptions.fillColor(DrawHelper.adjustAlpha(color, 0.4f));
+        //circleOptions.visible(false);
+        //circleOptions.writeToParcel();
+        map.addCircle(circleOptions);
     }
 
     private void updateLocationUI() {

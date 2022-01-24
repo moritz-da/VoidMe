@@ -30,7 +30,7 @@ public class DummyFactory {
             String[] catArr = resources.getStringArray(R.array.categories_array);
             LocationEntity dummy = new LocationEntity(
                     "VoidLocation Dummy No." + i,
-                    "This is the description of Dummy number " + i + " which is a dummy location, suitable for VoidMe.",
+                    "This is the description of dummy number " + i + " which is a dummy location, suitable for VoidMe.",
                     catArr[ThreadLocalRandom.current().nextInt(0, catArr.length)],
                     (ThreadLocalRandom.current().nextDouble(48.4000, 48.999)),
                     ThreadLocalRandom.current().nextDouble(8.97, 9.4000),
