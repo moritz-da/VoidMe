@@ -87,6 +87,13 @@
     <string name="location_list_header">VoidMe Locations</string>
     <string name="location_list_subheader">Search or filter locations</string>
     <string name="location_list_search">Search location</string>
+    <string name="new_entry_description_hint">Give a short description</string>
+    <string name="new_entry_description">Description</string>
+    <string name="new_entry_title_hint">Name of the Location</string>
+    <string name="new_entry_title">Title</string>
+    <string name="new_entry_category">Choose a category</string>
+    <string name="category">Category:</string>
+    <string name="new_entry_severity">Severity</string>
 
     <!-- XX -->
 </resources>

@@ -69,8 +69,18 @@
 
                     />
 
-            </LinearLayout>
 
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/location_marker_severityIndicator"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+
+                app:srcCompat="@drawable/bg_input"
+                app:tint="@color/textDark"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                tools:ignore="ContentDescription,RtlSymmetry" />
         </LinearLayout>
 
         <ImageView
@@ -88,6 +98,7 @@
             app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
             app:tint="@color/backgroundAltDark"
             tools:ignore="ContentDescription" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

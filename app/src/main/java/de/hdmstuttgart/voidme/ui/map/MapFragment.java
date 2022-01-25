@@ -7,13 +7,17 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -39,12 +43,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
+import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 import de.hdmstuttgart.voidme.shared.utils.ui.DrawHelper;
 
 public class MapFragment extends Fragment {
@@ -53,6 +60,7 @@ public class MapFragment extends Fragment {
     private GoogleMap map;
     private CameraPosition cameraPosition;
     public List<Marker> markerList = new ArrayList<>();
+    public List<CircleOptions> circleList = new ArrayList<>();
     private List<LocationEntity> closeLocations;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -101,35 +109,48 @@ public class MapFragment extends Fragment {
 
                 @Override
                 public View getInfoWindow(@NonNull Marker marker) {
+                    LocationEntity locationObj = (LocationEntity) marker.getTag();
                     View infoWindow = getLayoutInflater().inflate(R.layout.info_contents, requireView().findViewById(R.id.map), false);
                     TextView title = infoWindow.findViewById(R.id.location_marker_title);
                     title.setText(marker.getTitle());
-
                     TextView snippet = infoWindow.findViewById(R.id.location_marker_snippet);
-                    snippet.setText(marker.getSnippet());
+                    if (locationObj != null) {
+                        List<Address> address = LocationService.getAddress(requireContext(), locationObj.getLatitude(), locationObj.getLongitude());
+                        Log.d(TAG, "getInfoWindow: " + address.toString());
+                        Log.d(TAG, "getInfoWindow: " + locationObj.getLatitude() + " " +  locationObj.getLongitude());
+                        snippet.setText(String.format("%s%n%n" + ((address.size() > 0)?"%s%n%n ":"%s") + "%s %s ",
+                                marker.getSnippet(),
+                                (address.size() > 0)?address.get(0).getAddressLine(0):"",
+                                getString(R.string.category), locationObj.getCategory())
+                        );
+                        ImageView indicator = infoWindow.findViewById(R.id.location_marker_severityIndicator);
+                        indicator.setColorFilter(DrawHelper.getColorInt(50f -(1 + locationObj.getSeverity() * 10.2f)), PorterDuff.Mode.SRC_OVER);
+                    } else {
+                        snippet.setText(marker.getSnippet());
+                    }
                     return infoWindow;
                 }
-
             });
 
 
             closeLocations = DbManager.voidLocation.locationDao().getAll();
             for (LocationEntity l:closeLocations) {
                 MarkerOptions voidLocation = new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getTitle()).snippet(l.getDescription());
-                //TODO snippet includes category name, severity level, address of close location
+                //TODO snippet includes description, category name, severity level, address of close location
                 switch (l.getSeverity()) {
-                    case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50.0f));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50.0f), 20); break;
-                    case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_ORANGE), 28);break;
+                    case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(40f));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.max(Math.round(l.getAccuracy()), 20)); break;
+                    case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(23f));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.max(Math.round(l.getAccuracy()), 35));break;
                     case 3: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), 35);break;
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.max(Math.round(l.getAccuracy()), 45));break;
                     case 0:
-                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_AZURE), 10);
+                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50f)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.max(Math.round(l.getAccuracy()), 10));
                 }
                 //TODO change marker icons or design for each category, color needs to be changeable see -> https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
 
                 Marker marker = googleMap.addMarker(voidLocation);
+                if (marker != null)marker.setTag(l);
                 if (marker != null)marker.setVisible(false);
 
                 markerList.add(marker);
@@ -139,9 +160,8 @@ public class MapFragment extends Fragment {
             googleMap.addMarker(newMarker);
 
             getLocationPermission();
-
             if (locationPermissionGranted) {
-                updateLocationUI();
+                updateLocationUI(false);
                 getDeviceLocation();
             } else {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
@@ -150,8 +170,10 @@ public class MapFragment extends Fragment {
                 for(Marker m:markerList){
                     m.setVisible(googleMap.getCameraPosition().zoom > 8);
                 }
+                /*for(CircleOptions c:circleList){
+                    c.visible(googleMap.getCameraPosition().zoom > 15);
+                }*/
             });
-
             // TODO https://developer.android.com/training/location/permissions#background
             // if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
             // https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers
@@ -174,31 +196,31 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateLocationUI();
+        updateLocationUI(false);
         if (locationPermissionGranted) {
             getDeviceLocation();
         }
     }
 
     private void drawCircle(LatLng point, int color, int radius){
-        CircleOptions circleOptions = new CircleOptions();
-        circleOptions.center(point);
-        circleOptions.radius(radius);
-        circleOptions.strokeColor(color);
-        circleOptions.strokeWidth(2);
+        CircleOptions circleOptions = new CircleOptions()
+        .center(point)
+        .radius(radius)
+        .strokeColor(color)
+        .strokeWidth(2)
         // Fill color of the circle, set to 40%
-        circleOptions.fillColor(DrawHelper.adjustAlpha(color, 0.4f));
+        .fillColor(DrawHelper.adjustAlpha(color, 0.4f));
         //circleOptions.visible(false);
-        //circleOptions.writeToParcel();
+        circleList.add(circleOptions);
         map.addCircle(circleOptions);
     }
 
-    private void updateLocationUI() {
+    private void updateLocationUI(boolean forceDisabled) {
         if (map == null) {
             return;
         }
         try {
-            if (locationPermissionGranted) {
+            if (locationPermissionGranted && !forceDisabled) {
                 //Show blue dot at current position
                 map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
@@ -236,8 +258,8 @@ public class MapFragment extends Fragment {
                 //For multiple Requests like: new ActivityResultContracts.RequestMultiplePermissions(), responseMap -> switch(responseMap) case respMap[0]Permission1: {if respMap[0]BooleanResult then locationPermGranted = true;}
                 if (isGranted) {
                     locationPermissionGranted = true;
+                    getDeviceLocation();
                 } else {
-                    updateLocationUI();
                     //TODO
                     // Explain to the user that the feature is unavailable because the
                     // features requires a permission that the user has denied. At the
@@ -245,6 +267,7 @@ public class MapFragment extends Fragment {
                     // settings in an effort to convince the user to change their
                     // decision.
                 }
+                updateLocationUI(false);
             });
 
     /**
@@ -289,7 +312,6 @@ public class MapFragment extends Fragment {
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         View mapView = inflater.inflate(R.layout.fragment_map, container, false);
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
         return mapView;
@@ -303,7 +325,6 @@ public class MapFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-
         //Add location dialog
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
         //TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
@@ -313,7 +334,7 @@ public class MapFragment extends Fragment {
 
     private void openManuelLocationDialog() {
         DialogInterface.OnClickListener listener = (dialog, which) -> {
-            //TODO optional: show dialog for manuel zoom to city if no location access
+            //TODO optional: show dialog for manuel zoom to city if no location permitted
             //country
             //city
             LatLng markerLatLng = DEFAULT_LOCATION;
@@ -334,7 +355,13 @@ public class MapFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        updateLocationUI(true);
         //stop location updates
     }
 }
+/*String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL*/

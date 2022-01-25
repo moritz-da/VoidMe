@@ -55,7 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.25"
-                    android:text="Title"
+                    android:text="@string/new_entry_title"
                     android:textColor="@color/textDark" />
 
                 <EditText
@@ -65,12 +65,13 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.75"
                     android:ems="10"
-                    android:hint="Name of the Location"
+                    android:hint="@string/new_entry_title_hint"
                     android:minHeight="48dp"
                     android:textColor="@color/textDark"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:maxLength="35"/>
+                    android:maxLength="35"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -88,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.25"
-                    android:text="Description"
+                    android:text="@string/new_entry_description"
                     android:textColor="@color/textDark" />
 
                 <EditText
@@ -98,11 +99,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.75"
                     android:ems="10"
-                    android:hint="Give a short description"
+                    android:hint="@string/new_entry_description_hint"
                     android:minHeight="48dp"
                     android:textColor="@color/textDark"
                     android:maxLines="4"
-                    android:maxLength="85"/>
+                    android:maxLength="95"
+                    android:autofillHints="" />
             </LinearLayout>
 
             <Space
@@ -120,7 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="0.25"
-                    android:text="Choose a category"
+                    android:text="@string/new_entry_category"
                     android:textColor="@color/textDark" />
 
                 <Spinner
@@ -150,7 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.25"
-                    android:text="Severity"
+                    android:text="@string/new_entry_severity"
                     android:textColor="@color/textDark" />
 
                 <SeekBar

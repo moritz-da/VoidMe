@@ -1,29 +1,34 @@
+package de.hdmstuttgart.voidme.shared.utils.location;
 
-// Is not really needed anymore
-
-/*package de.hdmstuttgart.voidme.shared.utils.location;
-
-import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Build;
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import de.hdmstuttgart.voidme.shared.exceptions.PermissionDeniedException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationService {
 
+    public static List<Address> getAddress(Context context, double lat, double lon) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            for (int i = 0; i < 50; i++) {
+                addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                Log.w("LocationService", "geocoder object created and is present: " + Geocoder.isPresent());
+                Log.d("LocationService", "Geocoder: " + addresses.toString());
+                if (addresses.size() > 0) break;
+            }
+        } catch (IOException e) {
+            Log.e("LocationService", "LocationService getAddress: ", e);
+        }
+        return addresses;
+    }
+
+
+/*
     private static LocationService instance;
 
     private static final String TAG = "-HOME-";
@@ -110,6 +115,6 @@ public class LocationService {
 
     public void setUseHighPrecision(boolean useHighPrecision) {
         this.useHighPrecision = useHighPrecision;
-    }
+    }*/
 }
- */
+
