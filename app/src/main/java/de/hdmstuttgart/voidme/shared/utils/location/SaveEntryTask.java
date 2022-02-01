@@ -3,9 +3,11 @@ package de.hdmstuttgart.voidme.shared.utils.location;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteConstraintException;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -32,10 +34,8 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 5;
     private boolean useHighPrecision = true;
-
     private Activity activity;
     private Location locationTemp;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
 
@@ -94,7 +94,6 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
 
                 // save in DB
 
-
                 // really necessary?
                 while (locationTemp.getLongitude() == 0) {
                     // wait...
@@ -110,13 +109,14 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
                         locationTemp.getAccuracy(),
                         severity
                 );
-                DbManager.voidLocation.locationDao().insert(locationEntity);
-            }
-            // TODO: Still a problem with the ConstraintException
-            catch (SQLiteConstraintException ex) {
-                Log.e(TAG, "Entry not saved!", ex);
-                Toast.makeText(activity, R.string.location_exists, Toast.LENGTH_LONG).show();
-                return false;
+                long success = DbManager.voidLocation.locationDao().insert(locationEntity);
+                Log.e(TAG, "Success: " + success);
+
+                if (success == -1) {
+                    //SQLiteConstraintException -> Location already exists!
+                    //TODO: Output of a more detailed error description
+                    return false;
+                }
             }
             catch (PermissionDeniedException permEx) {
                 Log.e(TAG, "Entry not saved!", permEx);
@@ -127,7 +127,6 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
             }
 
             Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
-
             return true;
         }
         else {
@@ -150,7 +149,7 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
         }
         else {
             Toast.makeText(activity, R.string.not_saved_new_location, Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "location not saved");
+            Log.d(TAG, "location not saved (already exists?)");
         }
     }
 }

@@ -1,5 +1,7 @@
 package de.hdmstuttgart.voidme.database;
 
+import static androidx.room.OnConflictStrategy.IGNORE;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,8 +27,8 @@ public interface LocationDao {
     @Query("DELETE FROM LocationEntity;")
     void deleteAll();
 
-    @Insert
-    void insert(LocationEntity location);
+    @Insert(onConflict = IGNORE)
+    long insert(LocationEntity location);
 
     @Delete
     void delete(LocationEntity location);
