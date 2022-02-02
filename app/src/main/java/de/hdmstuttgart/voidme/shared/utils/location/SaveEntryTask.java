@@ -105,9 +105,9 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
                         locationTemp.getAccuracy(),
                         severity
                 );
+                // normally the row id, but -1 if not inserted in the db
                 long success = DbManager.voidLocation.locationDao().insert(locationEntity);
-                Log.e(TAG, "Success: " + success);
-
+                Log.d(TAG, "Success: " + success);
                 if (success == -1) {
                     //SQLiteConstraintException -> Location already exists!
                     //TODO: Output of a more detailed error description
