@@ -1,11 +1,7 @@
 package de.hdmstuttgart.voidme.shared.utils.location;
 
-import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -33,7 +30,6 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
     public static final int PERMISSIONS_FINE_LOCATION = 99;
     private static final int DEFAULT_UPDATE_INTERVAL = 30;
     private static final int FAST_UPDATE_INTERVAL = 5;
-    private boolean useHighPrecision = true;
     private Activity activity;
     private Location locationTemp;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -52,13 +48,14 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
         locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
 
-        // TODO: Get information from settings (sharedPreferences)
-        if (useHighPrecision) {
-            // most accurate -> use GPS
-            locationRequest.setPriority(PRIORITY_HIGH_ACCURACY);
-        } else {
-            // towers and wifi
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (sharedPreferences.getString("gps_precision", "precise").equals("precise")) {
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            Log.d(TAG, "Use gps (high precision)");
+        }
+        else {
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            Log.d(TAG, "Use towers+wifi (lower precision)");
         }
     }
 
@@ -87,7 +84,6 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
                             Log.d(TAG, "Lat: " + location.getLatitude());
                             Log.d(TAG, "Alt: " + location.getAltitude());
                             Log.d(TAG, "Acc: " + location.getAccuracy());
-                            Log.d(TAG, "Precision high? " + useHighPrecision);
                         }
                     }
                 });

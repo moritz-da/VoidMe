@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -57,18 +56,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.dark_mode_key))) setTheme(sharedPreferences);
-
-        // TODO: Move this to SaveEntryTask and call it before each location request.
-        if(key.equals(getString(R.string.gps_precision_key))) {
-            if (sharedPreferences.getString("gps_precision", "precise").equals("precise")) {
-                //LocationService.getInstance().setUseHighPrecision(true);
-                Log.d(TAG, "Use gps (high precision)");
-            }
-            else {
-                //LocationService.getInstance().setUseHighPrecision(false);
-                Log.d(TAG, "Use towers+wifi (lower precision)");
-            }
-        }
     }
 
     @Override
