@@ -139,13 +139,13 @@ public class MapFragment extends Fragment {
                 //TODO snippet includes description, category name, severity level, address of close location
                 switch (l.getSeverity()) {
                     case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(40f));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.max(Math.round(l.getAccuracy()), 20)); break;
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.min(Math.round(l.getAccuracy()), 20)); break;
                     case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(23f));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.max(Math.round(l.getAccuracy()), 35));break;
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.min(Math.round(l.getAccuracy()), 35));break;
                     case 3: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.max(Math.round(l.getAccuracy()), 45));break;
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.min(Math.round(l.getAccuracy()), 45));break;
                     case 0:
-                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50f)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.max(Math.round(l.getAccuracy()), 10));
+                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50f)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.min(Math.round(l.getAccuracy()), 10));
                 }
                 //TODO change marker icons or design for each category, color needs to be changeable see -> https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
 

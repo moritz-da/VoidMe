@@ -44,7 +44,7 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
     protected void onPreExecute() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
 
-        locationRequest = new LocationRequest();
+        locationRequest = LocationRequest.create();
         locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
 
@@ -88,13 +88,10 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
                     }
                 });
 
-                // save in DB
-
-                // really necessary?
+                // save entry in db
                 while (locationTemp.getLongitude() == 0) {
-                    // wait...
+                    // wait for location...
                 }
-
                 LocationEntity locationEntity = new LocationEntity(
                         title,
                         description,
@@ -107,10 +104,10 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
                 );
                 // normally the row id, but -1 if not inserted in the db
                 long success = DbManager.voidLocation.locationDao().insert(locationEntity);
-                Log.d(TAG, "Success: " + success);
                 if (success == -1) {
                     //SQLiteConstraintException -> Location already exists!
                     //TODO: Output of a more detailed error description
+                    Log.w(TAG, "Location already exists!");
                     return false;
                 }
             }
@@ -145,7 +142,7 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
         }
         else {
             Toast.makeText(activity, R.string.not_saved_new_location, Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "location not saved (already exists?)");
+            Log.d(TAG, "location not saved");
         }
     }
 }
