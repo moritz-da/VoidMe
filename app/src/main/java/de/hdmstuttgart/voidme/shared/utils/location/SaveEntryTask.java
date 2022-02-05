@@ -20,7 +20,7 @@ import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 
-public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
+public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask.SaveEntryResponse>> {
 
     private static final String TAG = "-SAVE_ENTRY_TASK-";
     //private static final int DEFAULT_UPDATE_INTERVAL = 30;
@@ -29,6 +29,12 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
     private Location locationTemp;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
+
+    protected enum SaveEntryResponse {
+        SUCCESSFUL,
+        ALREADY_EXISTS,
+        NO_LOCATION
+    }
 
     public SaveEntryTask(Activity activity)
     {
@@ -56,7 +62,7 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
 
     @SuppressLint("MissingPermission")  // has already been proved and granted
     @Override
-    protected Boolean doInBackground(String... strings) {
+    protected Enum<SaveEntryResponse> doInBackground(String... strings) {
         String title = strings[0];
         String description = strings[1];
         String category = strings[2];
@@ -82,10 +88,29 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
             }
         });
 
+        // TODO: Is this the best option?!
+        boolean wasSuccessful = false;
+        try {
+            for (int i = 0; i < 50; i++) {  // wait for location, but max 5sec
+                Thread.sleep(100);
+                if (locationTemp.getLongitude() != 0) {
+                    wasSuccessful = true;
+                    break;
+                }
+            }
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (!wasSuccessful) {
+            return SaveEntryResponse.NO_LOCATION;
+        }
+/*
         // save entry in db
         while (locationTemp.getLongitude() == 0) {
             // wait for location...
         }
+ */
 
         LocationEntity locationEntity = new LocationEntity(
             title,
@@ -101,23 +126,29 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Boolean> {
         // normally row id, but -1 if not inserted in db
         if (DbManager.voidLocation.locationDao().insert(locationEntity) == -1) {
             //SQLiteConstraintException, Location already exists!
-            //TODO: Output of a more detailed error description
-            Log.w(TAG, "Location already exists!");
-            return false;
+            return SaveEntryResponse.ALREADY_EXISTS;
         }
         Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
-        return true;
+        return SaveEntryResponse.SUCCESSFUL;
     }
 
     @Override
-    protected void onPostExecute(Boolean wasSuccessful) {
-        if(wasSuccessful) {
-            Toast.makeText(activity, R.string.saved_new_location, Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "...entry saved!");
-        }
-        else {
-            Toast.makeText(activity, R.string.not_saved_new_location, Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "...entry not saved!");
+    protected void onPostExecute(Enum<SaveEntryResponse> saveEntryResponseEnum) {
+        switch((SaveEntryResponse) saveEntryResponseEnum) {
+            case ALREADY_EXISTS:
+                Toast.makeText(activity, R.string.location_exists, Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "...entry not saved! (location already exists)");
+                break;
+            case NO_LOCATION:
+                Toast.makeText(activity, R.string.location_not_found, Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "...entry not saved! (location not found)");
+                break;
+            case SUCCESSFUL:
+                Toast.makeText(activity, R.string.saved_new_location, Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "...entry saved!");
+                break;
+            default:
+                // nothing
         }
     }
 }

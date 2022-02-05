@@ -77,7 +77,7 @@
     <string name="add_new_location">Add Location</string>
     <string name="save_new_location">Save</string>
     <string name="saved_new_location">Location added!</string>
-    <string name="not_saved_new_location">Location not added!</string>
+    <string name="location_not_found">Location not found!</string>
     <string name="location_exists">Location already exists!</string>
     <string name="save_new_location_description">Save the created location</string>
 
