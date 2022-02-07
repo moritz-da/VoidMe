@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.hdmstuttgart.voidme.R;
+import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
@@ -27,7 +28,6 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         this.list = list;
         this.activity = activity;
     }
-
 
     @NonNull
     @Override
@@ -50,6 +50,23 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void deleteItem(int position) {
+//            mRecentlyDeletedItem = mListItems.get(position);
+//            mRecentlyDeletedItemPosition = position;
+        Log.d(TAG, "DELETE: Position: " + position);
+        Log.d(TAG, "DELETE: Item: " + list.get(position));
+        Log.d(TAG, "DELETE: List before: " + list);
+        Log.d(TAG, "DELETE: List DB before: " + DbManager.voidLocation.locationDao().getAll());
+        DbManager.voidLocation.locationDao().delete(list.get(position));
+        list.remove(position);
+        Log.d(TAG, "DELETE: List after: " + list);
+        Log.d(TAG, "DELETE: List DB after: " + DbManager.voidLocation.locationDao().getAll());
+        notifyDataSetChanged();
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
+//            showUndoSnackbar();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

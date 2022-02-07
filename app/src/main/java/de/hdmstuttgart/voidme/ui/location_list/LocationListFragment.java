@@ -1,11 +1,5 @@
 package de.hdmstuttgart.voidme.ui.location_list;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,17 +44,26 @@ public class LocationListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-        recView = view.findViewById(R.id.locationListRecyclerView);
-        recView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        foundLocations.addAll(DbManager.voidLocation.locationDao().getAll());
-        Log.d(TAG, "List:" + foundLocations);
-        adapter = new LocationListAdapter(foundLocations, this.getActivity());
-        recView.addItemDecoration(new ItemSpaceDecorator(-80));
-        recView.setAdapter(adapter);
+        setUpRecyclerView(view);
         handleRecyclerViewState(view);
         EditText input = view.findViewById(R.id.searchLocation);
         ImageButton btn = view.findViewById(R.id.btnSearchTitle);
         btn.setOnClickListener(v -> search(input.getText().toString()));
+    }
+
+    private void setUpRecyclerView(View view) {
+        foundLocations.clear();
+        foundLocations.addAll(DbManager.voidLocation.locationDao().getAll());
+        Log.d(TAG, "List:" + foundLocations);
+
+        adapter = new LocationListAdapter(foundLocations, this.getActivity());
+
+        recView = view.findViewById(R.id.locationListRecyclerView);
+        recView.addItemDecoration(new ItemSpaceDecorator(-80));
+        recView.setAdapter(adapter);
+        recView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(recView);
     }
 
     @Override
