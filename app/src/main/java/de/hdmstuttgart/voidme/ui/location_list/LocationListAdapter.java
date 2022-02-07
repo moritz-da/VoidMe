@@ -61,11 +61,12 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         Log.d(TAG, "DELETE: List DB before: " + DbManager.voidLocation.locationDao().getAll());
         DbManager.voidLocation.locationDao().delete(list.get(position));
         list.remove(position);
+
         Log.d(TAG, "DELETE: List after: " + list);
         Log.d(TAG, "DELETE: List DB after: " + DbManager.voidLocation.locationDao().getAll());
         notifyDataSetChanged();
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
+        //notifyItemRemoved(position);
+        //notifyItemRangeChanged(position, getItemCount());
 //            showUndoSnackbar();
     }
 
@@ -89,10 +90,12 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
             locationItemDescription =  itemView.findViewById(R.id.itemDescription);
             locationItemLatitude =  itemView.findViewById(R.id.itemLatitude);
             locationItemLongitude =  itemView.findViewById(R.id.itemLongitude);
-            //locationItemImage = itemView.findViewById(R.id.poster);
 
             itemView.setOnClickListener(v -> {
                 Toast.makeText(v.getContext(), "Clicked: " + list.get(getLayoutPosition()).getTitle(), Toast.LENGTH_SHORT).show();
+                DbManager.voidLocation.locationDao().delete(list.get(getLayoutPosition()));
+                list.remove(getLayoutPosition());
+                notifyItemRemoved(getLayoutPosition());
             });
         }
     }

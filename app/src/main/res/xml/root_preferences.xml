@@ -8,6 +8,7 @@
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_round_nights_stay_24"
             app:key="@string/dark_mode_key"
+            app:defaultValue="true"
             app:summaryOff="@string/dark_mode_summary_off"
             app:summaryOn="@string/dark_mode_summary_on"
             app:title="@string/dark_mode_title" />

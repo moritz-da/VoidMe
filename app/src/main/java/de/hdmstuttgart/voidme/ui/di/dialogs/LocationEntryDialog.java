@@ -1,7 +1,7 @@
-/*
 package de.hdmstuttgart.voidme.ui.di.dialogs;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
@@ -14,6 +14,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Objects;
@@ -22,33 +24,37 @@ import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 
-public class LocationEntryDialog {
+public class LocationEntryDialog extends Dialog {
     private static final String TAG = LocationEntryDialog.class.toString();
-    private View addBtn;
+    /*private View addBtn;
     private View view;
     private Context context;
-    private Activity activity;
+    private Activity activity;*/
 
+    public LocationEntryDialog(@NonNull Context context) {
+        super(context);
+    }
 
-    public LocationEntryDialog(View addBtn, View view, Context context, Activity activity) {
-        this.addBtn = addBtn;
-        this.view = view;
+    public static LocationEntryDialog newInstance(View view, Context context, Activity activity) {
+        LocationEntryDialog locationEntryDialog = new LocationEntryDialog(context);
+        locationEntryDialog.setOwnerActivity(activity);
+        locationEntryDialog.setContentView(view);
+        return locationEntryDialog;
     }
 
 
-    void locationEntryHandler() {
-        addBtn.setOnClickListener(v -> {
+    private void locationEntryHandler() {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
-                    activity,
+                    this.getOwnerActivity(),
                     R.style.SheetDialog
             );
             bottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-            View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.new_entry_bottom_sheet, view.findViewById(R.id.addLocation_bottomSheet_container));
+            View bottomSheetView = LayoutInflater.from(this.getContext()).inflate(R.layout.new_entry_bottom_sheet, this.getWindow().findViewById(R.id.addLocation_bottomSheet_container));
             //bottomSheetView.setBackgroundColor(0);
 
             Spinner category = bottomSheetView.findViewById(R.id.categorySelector);
             ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
-                    context,
+                    this.getContext(),
                     R.array.categories_array,
                     R.layout.spinner_color
             );
@@ -64,7 +70,7 @@ public class LocationEntryDialog {
                     SeekBar severity = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.severityLevel));
                     EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
                     EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
-                    Location location = new Location(LocationService.getInstance().getLocation(getActivity())); //TODO change origin later
+                    /*Location location = new Location(LocationService.getInstance().getLocation(getActivity())); //TODO change origin later
 
                     DbManager.voidLocation.locationDao().insert(new LocationEntity(
                             title.getText().toString(),
@@ -75,7 +81,7 @@ public class LocationEntryDialog {
                             location.getAltitude(),
                             location.getAccuracy(),
                             severity.getProgress()
-                    ));
+                    ));*/
                     Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
                     Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
                     bottomSheetDialog.dismiss();
@@ -83,7 +89,5 @@ public class LocationEntryDialog {
             }
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
-        });
     }
 }
-*/

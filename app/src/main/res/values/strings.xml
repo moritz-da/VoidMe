@@ -3,14 +3,10 @@
     <string name="app_name">VoidMe</string>
     <string name="location_permission_denied">Location permission missing!</string>
 
-
     <string name="icon_view">icon</string>
-
 
     <!-- Home -->
     <string name="settings_button">Settings Button</string>
-
-
 
     <!-- Navbar -->
     <string name="title_home">Home</string>
@@ -94,6 +90,12 @@
     <string name="new_entry_category">Choose a category</string>
     <string name="category">Category:</string>
     <string name="new_entry_severity">Severity</string>
+    <string name="instructionsHeader">How does VoidMe works?</string>
+    <string name="instruction">
+        1. If you are close to a location where you think people should avoid it for various reasons, press the \'Add Location\' button.\n\n
+        2. Enter a title, description, a suitable category if possible and set the severity of the present issue.\n\n
+        3. Show the current VoidMe locations in a list, search them by name or display them on a map.\n\n
+    </string>
 
     <!-- XX -->
 </resources>

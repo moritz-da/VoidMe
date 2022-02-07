@@ -20,7 +20,6 @@
         <!-- <item name="android:background">@color/backgroundDark</item> -->
         <item name="android:textColor">@color/textDark</item>
 
-
         <item name="android:checkedButton">@color/primary</item>
 
     </style>

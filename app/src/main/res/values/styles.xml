@@ -17,5 +17,5 @@
         <item name="android:textColorHint">@color/textAltDark</item>
     </style>
 
-    <style name="expandedBarTextStyle"></style>
+    <style name="expandedBarTextStyle" />
 </resources>

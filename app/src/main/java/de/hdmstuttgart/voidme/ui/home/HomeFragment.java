@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Objects;
@@ -48,8 +49,10 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView instructionHeader = binding.textHome;
+        final TextView instruction = binding.textHomeBody;
+        homeViewModel.getHeader().observe(getViewLifecycleOwner(), instructionHeader::setText);
+        homeViewModel.getBody().observe(getViewLifecycleOwner(), instruction::setText);
 
         return root;
     }
@@ -60,7 +63,6 @@ public class HomeFragment extends Fragment {
         AppCompatImageButton settingsBtn = view.findViewById(R.id.settingsBtn);
 
         settingsBtn.setOnClickListener(e -> {
-            //NavUtils.navigateUpFromSameTask(this.requireActivity());
             Intent intent = new Intent(this.getContext(), SettingsActivity.class);
             startActivity(intent);
         });
@@ -73,18 +75,16 @@ public class HomeFragment extends Fragment {
                         this.requireActivity(),
                         R.style.SheetDialog
                 );
+                bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
                 bottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.new_entry_bottom_sheet,
                         view.findViewById(R.id.addLocation_bottomSheet_container));
-                //bottomSheetView.setBackgroundColor(0);
-
                 Spinner category = bottomSheetView.findViewById(R.id.categorySelector);
                 ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
                         this.getContext(),
                         R.array.categories_array,
                         R.layout.spinner_color
                 );
-
                 arrayAdapter.setDropDownViewResource(R.layout.spinner_color_dropdown_layout);
                 category.setAdapter(arrayAdapter);
 
@@ -95,10 +95,8 @@ public class HomeFragment extends Fragment {
                         SeekBar severity = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.severityLevel));
                         EditText title = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationName));
                         EditText description = Objects.requireNonNull(bottomSheetDialog.findViewById(R.id.locationDescription));
-
                         saveEntry(title.getText().toString(), description.getText().toString(),
                                 category.getSelectedItem().toString(), Integer.toString(severity.getProgress()));
-
                         bottomSheetDialog.dismiss();
                     });
                 }
@@ -120,13 +118,12 @@ public class HomeFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             permissionsGranted = true;
-        }
-        else {
+        } else {
             Log.i(TAG, "...permission not granted...");
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
                 // TODO: Use a box that requires user interaction
-                Toast.makeText(getContext(), "Bitte aktiviere deinen Standort," +
-                        " damit du diesen Ort hinzufügen kannst!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "We require access to your location" +
+                        " to be able to save this location!", Toast.LENGTH_LONG).show();
             }
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }

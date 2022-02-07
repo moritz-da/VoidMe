@@ -2,6 +2,7 @@ package de.hdmstuttgart.voidme.ui.map;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -53,6 +54,8 @@ import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 import de.hdmstuttgart.voidme.shared.utils.ui.DrawHelper;
+import de.hdmstuttgart.voidme.ui.di.dialogs.DialogFactory;
+import de.hdmstuttgart.voidme.ui.di.dialogs.LocationEntryDialog;
 
 public class MapFragment extends Fragment {
 
@@ -117,14 +120,14 @@ public class MapFragment extends Fragment {
                     if (locationObj != null) {
                         List<Address> address = LocationService.getAddress(requireContext(), locationObj.getLatitude(), locationObj.getLongitude());
                         Log.d(TAG, "getInfoWindow: " + address.toString());
-                        Log.d(TAG, "getInfoWindow: " + locationObj.getLatitude() + " " +  locationObj.getLongitude());
-                        snippet.setText(String.format("%s%n%n" + ((address.size() > 0)?"%s%n%n ":"%s") + "%s %s ",
+                        Log.d(TAG, "getInfoWindow: " + locationObj.getLatitude() + " " + locationObj.getLongitude());
+                        snippet.setText(String.format("%s%n%n" + ((address.size() > 0) ? "%s%n%n " : "%s") + "%s %s ",
                                 marker.getSnippet(),
-                                (address.size() > 0)?address.get(0).getAddressLine(0):"",
+                                (address.size() > 0) ? address.get(0).getAddressLine(0) : "",
                                 getString(R.string.category), locationObj.getCategory())
                         );
                         ImageView indicator = infoWindow.findViewById(R.id.location_marker_severityIndicator);
-                        indicator.setColorFilter(DrawHelper.getColorInt(50f -(1 + locationObj.getSeverity() * 10.2f)), PorterDuff.Mode.SRC_OVER);
+                        indicator.setColorFilter(DrawHelper.getColorInt(50f - (locationObj.getSeverity() * 20f)), PorterDuff.Mode.SRC_OVER);
                     } else {
                         snippet.setText(marker.getSnippet());
                     }
@@ -132,26 +135,26 @@ public class MapFragment extends Fragment {
                 }
             });
 
-
             closeLocations = DbManager.voidLocation.locationDao().getAll();
-            for (LocationEntity l:closeLocations) {
+            for (LocationEntity l : closeLocations) {
                 MarkerOptions voidLocation = new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getTitle()).snippet(l.getDescription());
-                //TODO snippet includes description, category name, severity level, address of close location
                 switch (l.getSeverity()) {
-                    case 1: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(40f));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.min(Math.round(l.getAccuracy()), 20)); break;
-                    case 2: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(23f));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.min(Math.round(l.getAccuracy()), 35));break;
-                    case 3: voidLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.min(Math.round(l.getAccuracy()), 45));break;
-                    case 0:
-                    default:voidLocation.icon(BitmapDescriptorFactory.defaultMarker(50f)); drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.min(Math.round(l.getAccuracy()), 10));
+                    case 1:
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.min(Math.round(l.getAccuracy()), 20));
+                        break;
+                    case 2:
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.min(Math.round(l.getAccuracy()), 35));
+                        break;
+                    case 3:
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.min(Math.round(l.getAccuracy()), 45));
+                        break;
+                    default:
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.min(Math.round(l.getAccuracy()), 10));
                 }
-                //TODO change marker icons or design for each category, color needs to be changeable see -> https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
-
+                voidLocation.icon(bitmapDescriptorFromVector(requireContext(), getCategoryIcon(l.getCategory()), l.getSeverity()));
                 Marker marker = googleMap.addMarker(voidLocation);
-                if (marker != null)marker.setTag(l);
-                if (marker != null)marker.setVisible(false);
+                if (marker != null) marker.setTag(l);
+                if (marker != null) marker.setVisible(false);
 
                 markerList.add(marker);
             }
@@ -167,7 +170,7 @@ public class MapFragment extends Fragment {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, DEFAULT_ZOOM));
             }
             googleMap.setOnCameraMoveListener(() -> {
-                for(Marker m:markerList){
+                for (Marker m : markerList) {
                     m.setVisible(googleMap.getCameraPosition().zoom > 8);
                 }
                 /*for(CircleOptions c:circleList){
@@ -180,15 +183,49 @@ public class MapFragment extends Fragment {
         }
     };
 
+    private int getCategoryIcon(String category) {
+        final String[] categories;
+        categories = getResources().getStringArray(R.array.categories_array);
+        /*switch (category){
+            case categories[0]:return R.drawable.ic_round_bug_report_24;
+            case "":break;
+            case "":break;
+            case "":break;
+
+        }*/
+        return 0;
+    }
+
     private BitmapDescriptor bitmapDescriptorFromVector(@NonNull Context context, @DrawableRes int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         Bitmap bitmap;
         if (vectorDrawable != null) {
-            vectorDrawable.setBounds(0,0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+            vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
             bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             vectorDrawable.draw(canvas);
             return BitmapDescriptorFactory.fromBitmap(bitmap);
+        }
+        return BitmapDescriptorFactory.defaultMarker();
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes  int foregroundVectorResId, int severity) {
+        Bitmap bitmap = null;
+        Canvas canvas = null;
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_pin);
+        if (background != null) {
+            background.setColorFilter(DrawHelper.getColorInt(50f - (severity * 20f)), PorterDuff.Mode.SRC_ATOP);
+            background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+            bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            canvas = new Canvas(bitmap);
+            background.draw(canvas);
+        }
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, foregroundVectorResId);
+        if (vectorDrawable != null) {
+            vectorDrawable.setColorFilter(0, PorterDuff.Mode.SRC_ATOP);
+            vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 20, vectorDrawable.getIntrinsicHeight() + 5);
+            vectorDrawable.draw(canvas);
+            if (bitmap != null) return BitmapDescriptorFactory.fromBitmap(bitmap);
         }
         return BitmapDescriptorFactory.defaultMarker();
     }
@@ -202,14 +239,14 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void drawCircle(LatLng point, int color, int radius){
+    private void drawCircle(LatLng point, int color, int radius) {
         CircleOptions circleOptions = new CircleOptions()
-        .center(point)
-        .radius(radius)
-        .strokeColor(color)
-        .strokeWidth(2)
-        // Fill color of the circle, set to 40%
-        .fillColor(DrawHelper.adjustAlpha(color, 0.4f));
+                .center(point)
+                .radius(radius)
+                .strokeColor(color)
+                .strokeWidth(2)
+                // Fill color of the circle, set to 40%
+                .fillColor(DrawHelper.adjustAlpha(color, 0.4f));
         //circleOptions.visible(false);
         circleList.add(circleOptions);
         map.addCircle(circleOptions);
@@ -262,7 +299,7 @@ public class MapFragment extends Fragment {
                 } else {
                     //TODO
                     // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
+                    // features require a permission that the user has denied. At the
                     // same time, respect the user's decision. Don't link to system
                     // settings in an effort to convince the user to change their
                     // decision.
@@ -297,7 +334,7 @@ public class MapFragment extends Fragment {
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage(), e);
         }
     }
@@ -327,8 +364,11 @@ public class MapFragment extends Fragment {
         }
         //Add location dialog
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
+        if (addBtn != null) {
+            //Dialog dialog = DialogFactory.create(DialogFactory.LOCATION_ENTRY_DIALOG, view, getContext(), getActivity());
+            //dialog.locationEntryHandler();
+        }
         //TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
-
     }
 
 

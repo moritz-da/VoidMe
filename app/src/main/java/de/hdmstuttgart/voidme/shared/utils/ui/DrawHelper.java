@@ -26,7 +26,7 @@ public class DrawHelper {
 
     public static int getColorInt(float hue) {
         return Color.HSVToColor(new float[]{
-                hue, 1f, .6f
+                hue, .8f, .9f
         });
     }
 

@@ -30,6 +30,9 @@ public interface LocationDao {
     @Insert(onConflict = IGNORE)
     long insert(LocationEntity location);
 
+    /*@Insert(onConflict = IGNORE)
+    int insertOrThrow(LocationEntity location);*/
+
     @Delete
     void delete(LocationEntity location);
 }
