@@ -1,13 +1,26 @@
 package de.hdmstuttgart.voidme;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.core.internal.deps.guava.base.Preconditions.checkNotNull;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -15,15 +28,20 @@ import androidx.test.espresso.action.GeneralLocation;
 import androidx.test.espresso.action.GeneralSwipeAction;
 import androidx.test.espresso.action.Press;
 import androidx.test.espresso.action.Swipe;
+import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.ClassRule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import de.hdmstuttgart.voidme.database.DbManager;
 
 @RunWith(AndroidJUnit4.class)
 public class AddNewEntryTest {
@@ -32,19 +50,14 @@ public class AddNewEntryTest {
     public ActivityScenarioRule<MainActivity> activityScenarioRule
             = new ActivityScenarioRule<>(MainActivity.class);
 
-    @ClassRule
-    public static DisableAnimationsRule disableAnimationsRule = new DisableAnimationsRule();
+    @Before @After
+    public void setup() {
+        DbManager.voidLocation.locationDao().deleteAll();
+    }
+
 
     @Test
     public void AddNewEntryTest() {
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        onView(withId(R.id.navigation_home)).perform(click());
 
         onView(withId(R.id.btn_add_location)).perform(click());
 
@@ -64,28 +77,30 @@ public class AddNewEntryTest {
 
         onView(withId(R.id.severityLevel)).perform(setProgress(3));
 
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(withId(R.id.saveNewLocation)).perform(click());
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(withId(R.id.navigation_location_list)).perform(click());
+
+        onView(withId(R.id.locationListRecyclerView)).check(matches(atPosition(0, hasDescendant(withText("This is a test")))));
+        onView(withId(R.id.locationListRecyclerView)).check(matches(atPosition(0, hasDescendant(withText("blablablablabla")))));
 
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-//        Espresso.onView(ViewMatchers.withId(R.id.locationDescription)).perform(customSwipeUp());
-//        Espresso.onView(allOf(ViewMatchers.withId(R.id.locationDescription), ViewMatchers.isDisplayingAtLeast(1))).perform(customSwipeUp());
-
-        onView(withId(R.id.saveNewLocation)).perform(click());
-
-
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     // set progress as a value in SeekBar
@@ -107,6 +122,24 @@ public class AddNewEntryTest {
         };
     }
 
-    public static ViewAction customSwipeUp() {
-        return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER,GeneralLocation.TOP_CENTER, Press.FINGER);}
+    public static Matcher<View> atPosition(final int position, @NonNull final Matcher<View> itemMatcher) {
+        checkNotNull(itemMatcher);
+        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has item at position " + position + ": ");
+                itemMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(final RecyclerView view) {
+                RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
+                if (viewHolder == null) {
+                    // has no item on such position
+                    return false;
+                }
+                return itemMatcher.matches(viewHolder.itemView);
+            }
+        };
+    }
 }
