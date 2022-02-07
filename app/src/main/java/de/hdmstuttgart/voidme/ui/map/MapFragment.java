@@ -173,9 +173,6 @@ public class MapFragment extends Fragment {
                 for (Marker m : markerList) {
                     m.setVisible(googleMap.getCameraPosition().zoom > 8);
                 }
-                /*for(CircleOptions c:circleList){
-                    c.visible(googleMap.getCameraPosition().zoom > 15);
-                }*/
             });
             // TODO https://developer.android.com/training/location/permissions#background
             // if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -186,14 +183,21 @@ public class MapFragment extends Fragment {
     private int getCategoryIcon(String category) {
         final String[] categories;
         categories = getResources().getStringArray(R.array.categories_array);
-        /*switch (category){
-            case categories[0]:return R.drawable.ic_round_bug_report_24;
-            case "":break;
-            case "":break;
-            case "":break;
-
-        }*/
-        return 0;
+        if (category.equals(categories[0])) return R.drawable.ic_round_groups_24;
+        if (category.equals(categories[1])) return R.drawable.ic_round_flashlight_off_24;
+        if (category.equals(categories[2])) return R.drawable.ic_round_car_crash_24;
+        if (category.equals(categories[3])) return R.drawable.ic_round_stairs_24;
+        if (category.equals(categories[4])) return R.drawable.ic_round_ac_unit_24;
+        if (category.equals(categories[5])) return R.drawable.ic_round_masks_24;
+        if (category.equals(categories[6])) return R.drawable.ic_round_liquor_24;
+        if (category.equals(categories[7])) return R.drawable.ic_round_minor_crash_24;
+        if (category.equals(categories[8])) return R.drawable.ic_round_back_hand_24;
+        if (category.equals(categories[9])) return R.drawable.ic_round_money_off_24;
+        if (category.equals(categories[10])) return R.drawable.ic_round_medication_liquid_24;
+        if (category.equals(categories[11])) return R.drawable.ic_round_tsunami_24;
+        if (category.equals(categories[12])) return R.drawable.ic_round_pest_control_24;
+        if (category.equals(categories[13])) return R.drawable.ic_round_dangerous_24;
+        return R.drawable.ic_round_bug_report_24;
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(@NonNull Context context, @DrawableRes int vectorResId) {

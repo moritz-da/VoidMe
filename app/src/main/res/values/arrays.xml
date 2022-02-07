@@ -22,6 +22,8 @@
         <item>Gangs</item>
         <item>Theft</item>
         <item>Drugs</item>
+        <item>Tsunami Area</item>
+        <item>Pesticides</item>
         <item>Unsafe</item>
     </string-array>
 </resources>
