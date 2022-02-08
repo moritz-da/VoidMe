@@ -48,17 +48,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        /*getSupportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount == 0) {
-                setTitle(R.string.title)
-            }
-        }*/
-        //getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
 
     @Override
-    public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, @NonNull PreferenceScreen preferenceScreen) {
+    public boolean onPreferenceStartScreen(@NonNull PreferenceFragmentCompat caller, @NonNull PreferenceScreen preferenceScreen) {
         Log.d(TAG, "onPreferenceStartScreen: " + preferenceScreen.getKey());
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(DEV_UNLOCK, false)) {
@@ -112,6 +106,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         return true;
     }
 
+    /**
+     * Displays toasts on the same activity and cancels already existing.
+     * @param text The text of the toast
+     */
     private void showToast(String text) {
         if (mToast != null) mToast.cancel();
         mToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);

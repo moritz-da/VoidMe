@@ -130,13 +130,13 @@ public class MapFragment extends Fragment {
                 MarkerOptions voidLocation = new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getTitle()).snippet(l.getDescription());
                 switch (l.getSeverity()) {
                     case 1:
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.min(Math.round(l.getAccuracy()), 20));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(40f), Math.min(Math.round(l.getAccuracy() * l.getSeverity()), 20));
                         break;
                     case 2:
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.min(Math.round(l.getAccuracy()), 35));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(23f), Math.min(Math.round(l.getAccuracy() * l.getSeverity()), 35));
                         break;
                     case 3:
-                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.min(Math.round(l.getAccuracy()), 45));
+                        drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(BitmapDescriptorFactory.HUE_RED), Math.min(Math.round(l.getAccuracy() * l.getSeverity()), 45));
                         break;
                     default:
                         drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.min(Math.round(l.getAccuracy()), 10));
@@ -164,9 +164,9 @@ public class MapFragment extends Fragment {
                     m.setVisible(googleMap.getCameraPosition().zoom > 8);
                 }
             });
-            // TODO https://developer.android.com/training/location/permissions#background
-            // if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-            // https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers
+            /*TODO https://developer.android.com/training/location/permissions#background
+            if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+            https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers*/
         }
     };
 
@@ -185,9 +185,8 @@ public class MapFragment extends Fragment {
                 .radius(radius)
                 .strokeColor(color)
                 .strokeWidth(2)
-                // Fill color of the circle, set to 40%
+                // Fill color of the circle, set to 40% opacity
                 .fillColor(DrawHelper.adjustAlpha(color, 0.4f));
-        //circleOptions.visible(false);
         circleList.add(circleOptions);
         map.addCircle(circleOptions);
     }
@@ -240,9 +239,7 @@ public class MapFragment extends Fragment {
                     //TODO
                     // Explain to the user that the feature is unavailable because the
                     // features require a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
+                    // same time, respect the user's decision.
                 }
                 updateLocationUI(false);
             });
@@ -302,20 +299,20 @@ public class MapFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
         //Add location dialog
+        /*
+        TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
         if (addBtn != null) {
             //Dialog dialog = DialogFactory.create(DialogFactory.LOCATION_ENTRY_DIALOG, view, getContext(), getActivity());
             //dialog.locationEntryHandler();
         }
-        //TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
+        */
     }
 
 
     private void openManuelLocationDialog() {
         DialogInterface.OnClickListener listener = (dialog, which) -> {
             //TODO optional: show dialog for manuel zoom to city if no location permitted
-            //country
-            //city
             LatLng markerLatLng = DEFAULT_LOCATION;
             String markerTitle = "CityInput";
 

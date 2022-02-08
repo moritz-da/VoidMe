@@ -12,15 +12,11 @@ import java.util.Locale;
 
 public final class LocationService {
 
-    private LocationService() {
-        // not called
-    }
-
     public static List<Address> getAddress(Context context, double lat, double lon) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
         try {
-            addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            addresses = geocoder.getFromLocation(lat, lon, 1);
             Log.w("LocationService", "geocoder object created and is present: " + Geocoder.isPresent());
             Log.d("LocationService", "Geocoder: " + addresses.toString());
         } catch (IOException e) {

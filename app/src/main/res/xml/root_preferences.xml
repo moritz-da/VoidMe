@@ -33,7 +33,6 @@
             android:summary="@string/contributors_summary"
             android:key="@string/contributors_key"
             app:title="@string/contributors_title">
-
         </PreferenceScreen>
 
         <PreferenceScreen
@@ -41,7 +40,59 @@
             android:summary="@string/license_summary"
             android:key="@string/license_key"
             app:title="@string/license_title">
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_near_me_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_google"
+                app:title="@string/google_services">
+                <Preference
+                    android:persistent="false"
+                    android:selectable="false"
+                    android:summary="@string/license_google"
+                    android:title="string/license_google"/>
+            </PreferenceScreen>
 
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_handshake_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_junit"
+                app:title="@string/junit">
+                <Preference
+                    android:persistent="false"
+                    android:selectable="false"
+                    android:summary=""
+                    android:title="@string/instruction"/>
+            </PreferenceScreen>
+
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_handshake_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_material"
+                app:title="@string/material_design">
+            </PreferenceScreen>
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_handshake_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_font"
+                app:title="@string/font">
+                    <Preference
+                    android:persistent="false"
+                    android:selectable="false"
+                    android:summary=""
+                    android:title="string/license_font"/>
+            </PreferenceScreen>
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_handshake_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_room"
+                app:title="@string/room_database">
+            </PreferenceScreen>
+            <PreferenceScreen
+                android:icon="@drawable/ic_round_handshake_24"
+                android:summary="@string/license_apache"
+                android:key="@string/license_key_espresso"
+                app:title="@string/espresso">
+            </PreferenceScreen>
         </PreferenceScreen>
 
     </PreferenceCategory>

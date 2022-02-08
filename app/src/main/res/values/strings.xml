@@ -18,53 +18,54 @@
     <string name="activity_settings_key">settings</string>
 
     <string name="styles_header">Styling</string>
-        <!-- DarkMode Preferences -->
-        <string name="dark_mode_title">Dark mode</string>
-        <string name="dark_mode_summary_on">Contrast mode turned on</string>
-        <string name="dark_mode_summary_off">Contrast mode deactivated</string>
-        <string name="dark_mode_key">dark_mode</string>
+    <!-- DarkMode Preferences -->
+    <string name="dark_mode_title">Dark mode</string>
+    <string name="dark_mode_summary_on">Contrast mode turned on</string>
+    <string name="dark_mode_summary_off">Contrast mode deactivated</string>
+    <string name="dark_mode_key">dark_mode</string>
 
     <string name="location_header">Location</string>
-        <!-- DarkMode Preferences -->
-        <string name="gps_title">GPS Precision</string>
-        <string name="gps_precision_key">gps_precision</string>
+    <!-- DarkMode Preferences -->
+    <string name="gps_title">GPS Precision</string>
+    <string name="gps_precision_key">gps_precision</string>
 
     <string name="about_header">About</string>
-        <!-- License Preferences -->
-        <string name="license_title">Licenses</string>
-        <string name="license_summary">Dependencies, Open Source Licenses</string>
-        <string name="license_key">license</string>
-        <!-- Contributors Preferences -->
-        <string name="contributors_title">Contributors</string>
-        <string name="contributors_summary">Our crew behind VoidMe</string>
-        <string name="contributors_key">contributors</string>
+    <!-- License Preferences -->
+    <string name="license_title">Licenses</string>
+    <string name="license_summary">Dependencies, Open Source Licenses</string>
+    <string name="license_key_google">license</string>
+    <!-- Contributors Preferences -->
+    <string name="contributors_title">Contributors</string>
+    <string name="contributors_summary">Our crew behind VoidMe</string>
+    <string name="contributors_key">contributors</string>
 
     <string name="legals_header">Legals</string>
-        <!-- Privacy Preferences -->
-        <string name="privacy_title">Privacy Policy</string>
-        <string name="privacy_summary">How we deal with your data</string>
-        <string name="privacy_key">privacy</string>
-        <!-- Contact Preferences -->
-        <string name="contact_title">Contact</string>
-        <string name="contact_summary">Hints and Support</string>
-        <string name="contact_key">contact</string>
+    <!-- Privacy Preferences -->
+    <string name="privacy_title">Privacy Policy</string>
+    <string name="privacy_summary">How we deal with your data</string>
+    <string name="privacy_key">privacy</string>
+    <!-- Contact Preferences -->
+    <string name="contact_title">Contact</string>
+    <string name="contact_summary">Hints and Support</string>
+    <string name="contact_key">contact</string>
 
     <string name="advanced_header">Advanced</string>
-        <!-- Developer Preferences -->
-        <string name="developer_settings_title">Developer Settings</string>
-        <string name="developer_summary">Developer and maintain options</string>
-        <string name="developer_key">developer</string>
-        <!-- DB Preferences -->
-        <string name="database">Database</string>
-            <string name="reset_db_key">reset_db</string>
-            <string name="reset_db_title">Reset Database</string>
-            <string name="reset_db_summary">Reset the added locations database</string>
-            <string name="reset_db_toast">Database has been reset.</string>
+    <!-- Developer Preferences -->
+    <string name="developer_settings_title">Developer Settings</string>
+    <string name="developer_summary">Developer and maintain options</string>
+    <string name="developer_key">developer</string>
+    <!-- DB Preferences -->
+    <string name="database">Database</string>
+    <string name="reset_db_key">reset_db</string>
+    <string name="reset_db_title">Reset Database</string>
+    <string name="reset_db_summary">Reset the added locations database</string>
+    <string name="reset_db_toast">Database has been reset.</string>
 
-            <string name="db_dummy_title">Load Dummy Database</string>
-            <string name="db_dummy_summary">Initialize the database with samples</string>
-            <string name="db_dummy_key">dummy_db</string>
-            <string name="db_dummy_toast">Dummy database has been loaded.</string>
+    <string name="db_dummy_title">Load Dummy Database</string>
+    <string name="db_dummy_summary">Initialize the database with samples</string>
+    <string name="db_dummy_key">dummy_db</string>
+    <string name="db_dummy_toast">Dummy database has been loaded.</string>
+    <!-- Testing Preferences -->
     <string name="testing">Testing</string>
     <string name="bugs_key">bugs</string>
     <string name="bugs_title">Bugs and Reports</string>
@@ -98,7 +99,30 @@
         2. Enter a title, description, a suitable category if possible and set the severity of the present issue.\n\n
         3. Show the current VoidMe locations in a list, search them by name or display them on a map.\n\n
     </string>
-    <string name="search_voidlocation">Search VoidLocation</string>
-
-    <!-- XX -->
+    <string name="search_voidLocation">Search VoidLocation</string>
+    <string name="google_maps">Google Maps</string>
+    <string name="google_services">Google Services</string>
+    <string name="junit">JUnit</string>
+    <string name="material_design">Material Icons</string>
+    <string name="font">Roboto</string>
+    <string name="room_database">Room Database</string>
+    <string name="license_apache">Apache License, Version 2.0</string>
+    <string name="espresso">Espresso Android UI tests</string>
+    <string name="license_key_junit">license_junit</string>
+    <string name="license_key_material">license_material</string>
+    <string name="license_key_font">license_roboto</string>
+    <string name="license_key_room">license_room</string>
+    <string name="license_key_espresso">license_espresso</string>
+    <string name="license_key">license</string>
+    <string name="license_google">Copyright 2020 Google LLC\n\n
+    Licensed under the Apache License, Version 2.0 (the License)
+    you may not use this file except in compliance with the License.\n
+    You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an AS IS BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+    See the License for the specific language governing permissions and
+    limitations under the License.</string>
+    <string name="google_map_description">Google Map</string>
 </resources>
+
