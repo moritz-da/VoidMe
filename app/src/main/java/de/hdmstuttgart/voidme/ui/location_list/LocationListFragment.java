@@ -5,15 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
@@ -34,6 +30,7 @@ public class LocationListFragment extends Fragment {
     private LocationListAdapter adapter;
     private RecyclerView recView;
     List<LocationEntity> foundLocations = new ArrayList<>();
+    RecyclerView.AdapterDataObserver observer;
 
     @Nullable
     @Override
@@ -59,8 +56,27 @@ public class LocationListFragment extends Fragment {
         adapter = new LocationListAdapter(foundLocations, this.getActivity());
 
         recView = view.findViewById(R.id.locationListRecyclerView);
+        observer = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                Log.d(TAG, "Removed from Data");
+                if (itemCount == 0) handleRecyclerViewState(view);
+            }
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Log.d(TAG, "Data Set Changed");
+            }
+        };
+        adapter.registerAdapterDataObserver(observer);
         recView.addItemDecoration(new ItemSpaceDecorator(-80));
         recView.setAdapter(adapter);
+        recView.setOnClickListener(e -> {
+            handleRecyclerViewState(view);
+            Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT).show();
+        });
         recView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(recView);
@@ -69,18 +85,15 @@ public class LocationListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        adapter.unregisterAdapterDataObserver(observer);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        adapter = new LocationListAdapter(foundLocations, this.getActivity());
-        recView.setAdapter(adapter);
-        handleRecyclerViewState((View) recView.getParent());
-        adapter.notifyItemRangeChanged(0, foundLocations.size());
     }
 
-    public void search(String title) {
+    private void search(String title) {
         Log.d(TAG, "Input: " + title);
         int s = foundLocations.size();
         foundLocations.clear();

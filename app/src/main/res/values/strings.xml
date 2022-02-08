@@ -98,6 +98,7 @@
         2. Enter a title, description, a suitable category if possible and set the severity of the present issue.\n\n
         3. Show the current VoidMe locations in a list, search them by name or display them on a map.\n\n
     </string>
+    <string name="search_voidlocation">Search VoidLocation</string>
 
     <!-- XX -->
 </resources>

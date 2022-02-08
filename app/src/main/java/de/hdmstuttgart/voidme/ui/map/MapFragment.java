@@ -1,17 +1,14 @@
 package de.hdmstuttgart.voidme.ui.map;
 
+import static de.hdmstuttgart.voidme.ui.di.Helper.bitmapDescriptorFromVector;
+import static de.hdmstuttgart.voidme.ui.di.Helper.getCategoryIcon;
+
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +20,6 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -35,7 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -44,18 +39,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.shared.utils.location.LocationService;
 import de.hdmstuttgart.voidme.shared.utils.ui.DrawHelper;
-import de.hdmstuttgart.voidme.ui.di.dialogs.DialogFactory;
-import de.hdmstuttgart.voidme.ui.di.dialogs.LocationEntryDialog;
 
 public class MapFragment extends Fragment {
 
@@ -102,7 +93,6 @@ public class MapFragment extends Fragment {
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
             map = googleMap;
-
             map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                 @Override
@@ -151,7 +141,7 @@ public class MapFragment extends Fragment {
                     default:
                         drawCircle(voidLocation.getPosition(), DrawHelper.getColorInt(50f), Math.min(Math.round(l.getAccuracy()), 10));
                 }
-                voidLocation.icon(bitmapDescriptorFromVector(requireContext(), getCategoryIcon(l.getCategory()), l.getSeverity()));
+                voidLocation.icon(bitmapDescriptorFromVector(requireContext(), getCategoryIcon(l.getCategory(), getResources()), l.getSeverity()));
                 Marker marker = googleMap.addMarker(voidLocation);
                 if (marker != null) marker.setTag(l);
                 if (marker != null) marker.setVisible(false);
@@ -179,60 +169,6 @@ public class MapFragment extends Fragment {
             // https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers
         }
     };
-
-    private int getCategoryIcon(String category) {
-        final String[] categories;
-        categories = getResources().getStringArray(R.array.categories_array);
-        if (category.equals(categories[0])) return R.drawable.ic_round_groups_24;
-        if (category.equals(categories[1])) return R.drawable.ic_round_flashlight_off_24;
-        if (category.equals(categories[2])) return R.drawable.ic_round_car_crash_24;
-        if (category.equals(categories[3])) return R.drawable.ic_round_stairs_24;
-        if (category.equals(categories[4])) return R.drawable.ic_round_ac_unit_24;
-        if (category.equals(categories[5])) return R.drawable.ic_round_masks_24;
-        if (category.equals(categories[6])) return R.drawable.ic_round_liquor_24;
-        if (category.equals(categories[7])) return R.drawable.ic_round_minor_crash_24;
-        if (category.equals(categories[8])) return R.drawable.ic_round_back_hand_24;
-        if (category.equals(categories[9])) return R.drawable.ic_round_money_off_24;
-        if (category.equals(categories[10])) return R.drawable.ic_round_medication_liquid_24;
-        if (category.equals(categories[11])) return R.drawable.ic_round_tsunami_24;
-        if (category.equals(categories[12])) return R.drawable.ic_round_pest_control_24;
-        if (category.equals(categories[13])) return R.drawable.ic_round_dangerous_24;
-        return R.drawable.ic_round_bug_report_24;
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(@NonNull Context context, @DrawableRes int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        Bitmap bitmap;
-        if (vectorDrawable != null) {
-            vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-            bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            vectorDrawable.draw(canvas);
-            return BitmapDescriptorFactory.fromBitmap(bitmap);
-        }
-        return BitmapDescriptorFactory.defaultMarker();
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes  int foregroundVectorResId, int severity) {
-        Bitmap bitmap = null;
-        Canvas canvas = null;
-        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_pin);
-        if (background != null) {
-            background.setColorFilter(DrawHelper.getColorInt(50f - (severity * 20f)), PorterDuff.Mode.SRC_ATOP);
-            background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
-            bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            canvas = new Canvas(bitmap);
-            background.draw(canvas);
-        }
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, foregroundVectorResId);
-        if (vectorDrawable != null) {
-            vectorDrawable.setColorFilter(0, PorterDuff.Mode.SRC_ATOP);
-            vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 20, vectorDrawable.getIntrinsicHeight() + 5);
-            vectorDrawable.draw(canvas);
-            if (bitmap != null) return BitmapDescriptorFactory.fromBitmap(bitmap);
-        }
-        return BitmapDescriptorFactory.defaultMarker();
-    }
 
     @Override
     public void onResume() {
@@ -316,7 +252,6 @@ public class MapFragment extends Fragment {
      * cases when a location is not available.
      */
     private void getDeviceLocation() {
-
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
@@ -399,13 +334,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        updateLocationUI(true);
         //stop location updates
+        updateLocationUI(true);
     }
 }
-/*String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL*/

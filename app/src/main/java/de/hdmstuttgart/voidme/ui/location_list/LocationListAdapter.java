@@ -1,6 +1,5 @@
 package de.hdmstuttgart.voidme.ui.location_list;
 
-
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +17,11 @@ import java.util.List;
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
+import de.hdmstuttgart.voidme.ui.di.Helper;
 
+/**
+ *
+ */
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
     private static final String TAG = "-LOCATION ADAPTER-";
     private final List<LocationEntity> list;
@@ -41,6 +44,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
     public void onBindViewHolder(@NonNull LocationListAdapter.ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: " + position);
         holder.listItem = list.get(position);
+        holder.locationItemIcon.setImageBitmap(Helper.vectorToBitmap(activity.getApplicationContext(), Helper.getCategoryIcon(list.get(position).getCategory(), activity.getApplicationContext().getResources()), list.get(position).getSeverity()));
         holder.locationItemTitle.setText(list.get(position).getTitle());
         holder.locationItemDescription.setText(list.get(position).getDescription());
         holder.locationItemLatitude.setText(activity.getString(R.string.longitude_short, list.get(position).getLatitude()));
@@ -67,31 +71,29 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         notifyDataSetChanged();
         //notifyItemRemoved(position);
         //notifyItemRangeChanged(position, getItemCount());
-//            showUndoSnackbar();
+        //showUndoSnackbar();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         public final View listView;
         public LocationEntity listItem;
+        public final ImageView locationItemIcon;
         public final TextView locationItemTitle;
         public final TextView locationItemDescription;
         public final TextView locationItemLatitude;
         public final TextView locationItemLongitude;
-        //public final ImageView locationItemImage;
-
-        //List<LocationEntity> voidLocations = DbManager.voidLocation.locationDao().getAll();
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             listView = itemView;
+            locationItemIcon =  itemView.findViewById(R.id.listItemIcon);
             locationItemTitle =  itemView.findViewById(R.id.itemTitle);
             locationItemDescription =  itemView.findViewById(R.id.itemDescription);
             locationItemLatitude =  itemView.findViewById(R.id.itemLatitude);
             locationItemLongitude =  itemView.findViewById(R.id.itemLongitude);
 
             itemView.setOnClickListener(v -> {
+                //TODO swipe to delete
                 Toast.makeText(v.getContext(), "Clicked: " + list.get(getLayoutPosition()).getTitle(), Toast.LENGTH_SHORT).show();
                 DbManager.voidLocation.locationDao().delete(list.get(getLayoutPosition()));
                 list.remove(getLayoutPosition());

@@ -81,7 +81,7 @@
                 android:layout_height="32dp"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:background="@null"
-                android:contentDescription="Search VoidLocation"
+                android:contentDescription="@string/search_voidlocation"
                 android:foregroundTint="@color/textDark"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_round_search_24"
@@ -89,13 +89,13 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/locationListRecyclerView"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="100dp"
         android:gravity="center"
-        android:paddingBottom="80dp"
         android:scaleType="center"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,8 +111,6 @@
         layout="@layout/empty_view"
         android:layout_height="500dp"
         android:layout_width="match_parent">
-
     </include>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
