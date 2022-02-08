@@ -14,7 +14,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.lang.ref.WeakReference;
 
 import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
@@ -23,12 +24,10 @@ import de.hdmstuttgart.voidme.database.LocationEntity;
 public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask.SaveEntryResponse>> {
 
     private static final String TAG = "-SAVE_ENTRY_TASK-";
-    //private static final int DEFAULT_UPDATE_INTERVAL = 30;
-    //private static final int FAST_UPDATE_INTERVAL = 5;
-    private Activity activity;
-    private Location locationTemp;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationRequest locationRequest;
+    private final WeakReference<Activity> mActivity;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private Location mLocation;
 
     protected enum SaveEntryResponse {
         SUCCESSFUL,
@@ -38,29 +37,26 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask
 
     public SaveEntryTask(Activity activity)
     {
-        this.activity = activity;
+        mActivity = new WeakReference<>(activity);
     }
 
     @Override
     protected void onPreExecute() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity.get());
+        mLocationRequest = LocationRequest.create();
 
-        locationRequest = LocationRequest.create();
-        //locationRequest.setInterval(1000 * DEFAULT_UPDATE_INTERVAL);
-        //locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity.get());
         if (sharedPreferences.getString("gps_precision", "precise").equals("precise")) {
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             Log.d(TAG, "Use gps (high precision)");
         }
         else {
-            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            Log.d(TAG, "Use towers+wifi (lower precision)");
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            Log.d(TAG, "Use towers + wifi (low precision)");
         }
     }
 
-    @SuppressLint("MissingPermission")  // has already been proved and granted
+    @SuppressLint("MissingPermission")  // has already been checked and granted
     @Override
     protected Enum<SaveEntryResponse> doInBackground(String... strings) {
         String title = strings[0];
@@ -68,33 +64,30 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask
         String category = strings[2];
         int severity = Integer.parseInt(strings[3]);
 
-        if (locationTemp == null) {
-            locationTemp = new Location("location");
+        if (mLocation == null) {
+            mLocation = new Location("location");
         }
 
-        // get current position
+        // get current location
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        fusedLocationProviderClient.getCurrentLocation(locationRequest.getPriority(),
-                cancellationTokenSource.getToken()).addOnSuccessListener(activity, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    locationTemp.set(location);
-                    Log.d(TAG, "Lon: " + location.getLongitude());
-                    Log.d(TAG, "Lat: " + location.getLatitude());
-                    Log.d(TAG, "Alt: " + location.getAltitude());
-                    Log.d(TAG, "Acc: " + location.getAccuracy());
-                }
-            }
-        });
+        mFusedLocationProviderClient.getCurrentLocation(mLocationRequest.getPriority(),
+                cancellationTokenSource.getToken()).addOnSuccessListener(mActivity.get(), location -> {
+                    if (location != null) {
+                        mLocation.set(location);
+                        Log.d(TAG, "Longitude: " + location.getLongitude());
+                        Log.d(TAG, "Latitude: " + location.getLatitude());
+                        Log.d(TAG, "Altitude: " + location.getAltitude());
+                        Log.d(TAG, "Accuracy: " + location.getAccuracy());
+                    }
+                });
 
-        // TODO: Is this the best option?!
-        boolean wasSuccessful = false;
+        // wait for location, but max 10sec
+        boolean hasLocation = false;
         try {
-            for (int i = 0; i < 50; i++) {  // wait for location, but max 5sec
+            for (int i=0; i<100; i++) {
                 Thread.sleep(100);
-                if (locationTemp.getLongitude() != 0) {
-                    wasSuccessful = true;
+                if (mLocation.getLongitude() != 0) {
+                    hasLocation = true;
                     break;
                 }
             }
@@ -102,33 +95,25 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (!wasSuccessful) {
+        if (!hasLocation) {
             return SaveEntryResponse.NO_LOCATION;
         }
-/*
-        // save entry in db
-        while (locationTemp.getLongitude() == 0) {
-            // wait for location...
-        }
- */
 
+        // save entry in db
         LocationEntity locationEntity = new LocationEntity(
             title,
             description,
             category,
-            locationTemp.getLatitude(),
-            locationTemp.getLongitude(),
-            locationTemp.getAltitude(),
-            locationTemp.getAccuracy(),
+            mLocation.getLatitude(),
+            mLocation.getLongitude(),
+            mLocation.getAltitude(),
+            mLocation.getAccuracy(),
             severity
         );
-
-        // normally row id, but -1 if not inserted in db
-        if (DbManager.voidLocation.locationDao().insert(locationEntity) == -1) {
-            //SQLiteConstraintException, Location already exists!
+        if (DbManager.voidLocation.locationDao().insert(locationEntity) == -1) { // normally row id, but -1 if not inserted in db
             return SaveEntryResponse.ALREADY_EXISTS;
         }
-        Log.d(TAG, "DB: " + DbManager.voidLocation.locationDao().getAll());
+        Log.d(TAG, "Complete db: " + DbManager.voidLocation.locationDao().getAll());
         return SaveEntryResponse.SUCCESSFUL;
     }
 
@@ -136,15 +121,15 @@ public class SaveEntryTask extends AsyncTask<String, Integer, Enum<SaveEntryTask
     protected void onPostExecute(Enum<SaveEntryResponse> saveEntryResponseEnum) {
         switch((SaveEntryResponse) saveEntryResponseEnum) {
             case ALREADY_EXISTS:
-                Toast.makeText(activity, R.string.location_exists, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity.get(), R.string.location_exists, Toast.LENGTH_SHORT).show();
                 Log.w(TAG, "...entry not saved! (location already exists)");
                 break;
             case NO_LOCATION:
-                Toast.makeText(activity, R.string.location_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity.get(), R.string.location_not_found, Toast.LENGTH_SHORT).show();
                 Log.w(TAG, "...entry not saved! (location not found)");
                 break;
             case SUCCESSFUL:
-                Toast.makeText(activity, R.string.saved_new_location, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity.get(), R.string.location_saved, Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "...entry saved!");
                 break;
             default:

@@ -83,7 +83,7 @@ public class LocationEntryDialog extends Dialog {
                             severity.getProgress()
                     ));*/
                     Log.d(TAG, "Saving new Entry..." + DbManager.voidLocation.locationDao().getAll().toString());
-                    Toast.makeText(getContext(), R.string.saved_new_location, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.location_saved, Toast.LENGTH_SHORT).show();
                     bottomSheetDialog.dismiss();
                 });
             }

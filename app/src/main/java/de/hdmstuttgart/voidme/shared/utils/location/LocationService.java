@@ -20,18 +20,16 @@ public final class LocationService {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
         try {
-            for (int i = 0; i < 50; i++) {
-                addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                Log.w("LocationService", "geocoder object created and is present: " + Geocoder.isPresent());
-                Log.d("LocationService", "Geocoder: " + addresses.toString());
-                if (addresses.size() > 0) break;
-            }
+            addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            Log.w("LocationService", "geocoder object created and is present: " + Geocoder.isPresent());
+            Log.d("LocationService", "Geocoder: " + addresses.toString());
         } catch (IOException e) {
             Log.e("LocationService", "LocationService getAddress: ", e);
         }
         return addresses;
     }
 
+    // Feature not implemented yet
     public static Location getLocation(Context context, String address) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;

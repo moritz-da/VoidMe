@@ -39,12 +39,11 @@ import de.hdmstuttgart.voidme.ui.settings.SettingsActivity;
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "-HOME-";
-    private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
     private boolean permissionsGranted = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -72,7 +71,7 @@ public class HomeFragment extends Fragment {
         if (addBtn != null) {
             addBtn.setOnClickListener(v -> {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
-                        this.requireActivity(),
+                        this.requireContext(),
                         R.style.SheetDialog
                 );
                 bottomSheetDialog.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -121,9 +120,7 @@ public class HomeFragment extends Fragment {
         } else {
             Log.i(TAG, "...permission not granted...");
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // TODO: Use a box that requires user interaction
-                Toast.makeText(getContext(), "We require access to your location" +
-                        " to be able to save this location!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.permission_explanation, Toast.LENGTH_LONG).show();
             }
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
@@ -135,17 +132,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Register the permissions callback, which handles the user's response to the
-    // system permissions dialog. Save the return value, an instance of
-    // ActivityResultLauncher, as an instance variable.
-    private ActivityResultLauncher<String> requestPermissionLauncher =
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     permissionsGranted = true;
                 } else {
                     Log.i(TAG, "...permission denied");
-                    Toast.makeText(getContext(), "This function requires permission to be" +
-                            " granted in order to work properly", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.permission_denied_dialog, Toast.LENGTH_LONG).show();
                 }
             });
 }
