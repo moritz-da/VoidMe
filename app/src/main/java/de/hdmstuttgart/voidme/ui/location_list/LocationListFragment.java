@@ -48,14 +48,21 @@ public class LocationListFragment extends Fragment {
         btn.setOnClickListener(v -> search(input.getText().toString()));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        adapter.unregisterAdapterDataObserver(observer);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private void setUpRecyclerView(View view) {
         foundLocations.clear();
         foundLocations.addAll(DbManager.voidLocation.locationDao().getAll());
         Log.d(TAG, "List:" + foundLocations);
-
-        adapter = new LocationListAdapter(foundLocations, this.getActivity());
-
-        recView = view.findViewById(R.id.locationListRecyclerView);
         observer = new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
@@ -70,27 +77,32 @@ public class LocationListFragment extends Fragment {
                 Log.d(TAG, "Data Set Changed");
             }
         };
+        adapter = new LocationListAdapter(foundLocations, this.getActivity());
         adapter.registerAdapterDataObserver(observer);
+        recView = view.findViewById(R.id.locationListRecyclerView);
         recView.addItemDecoration(new ItemSpaceDecorator(-80));
         recView.setAdapter(adapter);
-        recView.setOnClickListener(e -> {
-            handleRecyclerViewState(view);
-            Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT).show();
-        });
         recView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        setUpItemTouchHelper();
+    }
+
+    private void setUpItemTouchHelper() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Toast.makeText(getContext(), "Deleted: " + foundLocations.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                adapter.deleteItem(position);
+                handleRecyclerViewState((View) recView.getParent());
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recView);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        adapter.unregisterAdapterDataObserver(observer);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     private void search(String title) {

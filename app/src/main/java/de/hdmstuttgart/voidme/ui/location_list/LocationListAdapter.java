@@ -23,7 +23,7 @@ import de.hdmstuttgart.voidme.ui.di.Helper;
  *
  */
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
-    private static final String TAG = "-LOCATION ADAPTER-";
+    private static final String TAG = "-LOCATION_ADAPTER-";
     private final List<LocationEntity> list;
     private final Activity activity;
 
@@ -57,21 +57,9 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
     }
 
     public void deleteItem(int position) {
-//            mRecentlyDeletedItem = mListItems.get(position);
-//            mRecentlyDeletedItemPosition = position;
-        Log.d(TAG, "DELETE: Position: " + position);
-        Log.d(TAG, "DELETE: Item: " + list.get(position));
-        Log.d(TAG, "DELETE: List before: " + list);
-        Log.d(TAG, "DELETE: List DB before: " + DbManager.voidLocation.locationDao().getAll());
         DbManager.voidLocation.locationDao().delete(list.get(position));
         list.remove(position);
-
-        Log.d(TAG, "DELETE: List after: " + list);
-        Log.d(TAG, "DELETE: List DB after: " + DbManager.voidLocation.locationDao().getAll());
-        notifyDataSetChanged();
-        //notifyItemRemoved(position);
-        //notifyItemRangeChanged(position, getItemCount());
-        //showUndoSnackbar();
+        notifyItemRemoved(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -93,11 +81,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
             locationItemLongitude =  itemView.findViewById(R.id.itemLongitude);
 
             itemView.setOnClickListener(v -> {
-                //TODO swipe to delete
                 Toast.makeText(v.getContext(), "Clicked: " + list.get(getLayoutPosition()).getTitle(), Toast.LENGTH_SHORT).show();
-                DbManager.voidLocation.locationDao().delete(list.get(getLayoutPosition()));
-                list.remove(getLayoutPosition());
-                notifyItemRemoved(getLayoutPosition());
             });
         }
     }
