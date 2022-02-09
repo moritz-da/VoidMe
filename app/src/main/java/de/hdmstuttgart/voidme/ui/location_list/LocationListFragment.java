@@ -1,10 +1,12 @@
 package de.hdmstuttgart.voidme.ui.location_list;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -118,22 +120,33 @@ public class LocationListFragment extends Fragment {
     }
 
     private void search(String title) {
-        Log.d(TAG, "Input: " + title);
-        foundLocations.clear();
-        adapter.notifyItemRangeRemoved(0, foundLocations.size());
-        foundLocations.addAll(DbManager.voidLocation.locationDao().searchLocation("%" + title +"%"));
-        if(foundLocations.size() > 0) {
+        if (!title.isEmpty()) {
+            Log.d(TAG, "Input: " + title);
+            int s = foundLocations.size();
+            foundLocations.clear();
+            adapter.notifyItemRangeRemoved(0, s);
+            foundLocations.addAll(DbManager.voidLocation.locationDao().searchLocation("%" + title + "%"));
+            if (foundLocations.size() > 0) {
+                adapter.notifyItemRangeChanged(0, foundLocations.size());
+                Log.d(TAG, "found List:" + foundLocations.toString());
+            } else {
+                Toast.makeText(getContext(), "No Items found!", Toast.LENGTH_SHORT).show();
+                handleRecyclerViewState((View) recView.getParent());
+            }
+        }
+        else {
+            foundLocations.clear();
+            foundLocations.addAll(DbManager.voidLocation.locationDao().getAll());
             adapter.notifyItemRangeChanged(0, foundLocations.size());
-            Log.d(TAG, "found List:" + foundLocations.toString());
-        } else {
-            Toast.makeText(getContext(), "No Items found!", Toast.LENGTH_SHORT).show();
-            handleRecyclerViewState((View) recView.getParent());
         }
     }
 
     private void handleRecyclerViewState(View view) {
         View emptyView = view.findViewById(R.id.empty_view);
         if (adapter.getItemCount() == 0) {
+            // Check if no view has focus:
+            InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             recView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {
