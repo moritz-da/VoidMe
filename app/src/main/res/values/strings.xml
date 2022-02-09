@@ -78,6 +78,7 @@
     <string name="location_exists">Location already exists!</string>
     <string name="save_new_location_description">Save the created location</string>
     <string name="permission_explanation">We require access to your location to be able to save this location!</string>
+    <string name="permission_explanation_maps">We require access to your location to show nearby locations!</string>
     <string name="permission_denied_dialog">This feature requires permission to be granted in order to work properly</string>
 
     <string name="latitude_short">Lat: %1$f</string>

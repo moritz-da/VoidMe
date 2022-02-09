@@ -216,7 +216,7 @@ public class MapFragment extends Fragment {
         if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Toast.makeText(getContext(), R.string.permission_explanation, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.permission_explanation_maps, Toast.LENGTH_LONG).show();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
