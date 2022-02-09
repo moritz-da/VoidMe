@@ -29,15 +29,4 @@ public class DrawHelper {
                 hue, .8f, .9f
         });
     }
-
-    /*public HSBType(Color color) {
-        if (color != null) {
-            float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-            this.hue = BigDecimal.valueOf(hsbValues[0] * 360);
-            this.saturation = BigDecimal.valueOf(hsbValues[1] * 100);
-            this.value = BigDecimal.valueOf(hsbValues[2] * 100);
-        } else {
-            throw new IllegalArgumentException("Constructor argument must not be null");
-        }
-    }*/
 }

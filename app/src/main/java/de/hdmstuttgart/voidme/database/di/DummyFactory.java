@@ -1,9 +1,7 @@
 package de.hdmstuttgart.voidme.database.di;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,12 +13,10 @@ public class DummyFactory {
     private static final String TAG = DummyFactory.class.getSimpleName();
 
     private final int amount;
-    private final Context context;
     private final Resources resources;
 
-    public DummyFactory(int amount, Context context, Resources resources) {
+    public DummyFactory(int amount, Resources resources) {
         this.amount = amount;
-        this.context = context;
         this.resources = resources;
     }
 
@@ -40,7 +36,6 @@ public class DummyFactory {
             );
             DbManager.voidLocation.locationDao().insert(dummy);
         }
-        Toast.makeText(context, R.string.db_dummy_toast, Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Saving dummy Entries..." + DbManager.voidLocation.locationDao().getAll().toString());
     }
 }

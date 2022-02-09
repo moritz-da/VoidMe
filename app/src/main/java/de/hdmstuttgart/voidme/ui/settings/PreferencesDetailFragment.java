@@ -74,7 +74,8 @@ public class PreferencesDetailFragment extends PreferenceFragment implements IPr
         Preference dummyDB = findPreference(getString(R.string.db_dummy_key));
         if (dummyDB != null) {
             dummyDB.setOnPreferenceClickListener(preference -> {
-                new DummyFactory(10, getContext(), getResources()).createDummies();
+                new DummyFactory(10, getResources()).createDummies();
+                Toast.makeText(getContext(), R.string.db_dummy_toast, Toast.LENGTH_SHORT).show();
                 return true;
             });
         }
