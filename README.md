@@ -23,11 +23,6 @@ Furthermore, the entries can be displayed vividly.
 
 ___
 
-# _Quick Overview_ #
-
-
-**Note:** _Coming soon..._
-
 ## Categories
 
 - busy places (Überfüllte Orte)
@@ -42,6 +37,7 @@ ___
   * GPS/Galileo
 * [x] Data Storage:
   * App local data storage with SQLight
+  * Shared Preferences
 
 
 ## Configuration & Dependencies
