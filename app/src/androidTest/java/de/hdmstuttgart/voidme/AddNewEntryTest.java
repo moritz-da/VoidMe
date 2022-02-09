@@ -1,6 +1,5 @@
 package de.hdmstuttgart.voidme;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -8,13 +7,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.core.internal.deps.guava.base.Preconditions.checkNotNull;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.widget.SeekBar;
@@ -24,10 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.action.GeneralLocation;
-import androidx.test.espresso.action.GeneralSwipeAction;
-import androidx.test.espresso.action.Press;
-import androidx.test.espresso.action.Swipe;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -50,14 +39,17 @@ public class AddNewEntryTest {
     public ActivityScenarioRule<MainActivity> activityScenarioRule
             = new ActivityScenarioRule<>(MainActivity.class);
 
-    @Before @After
+    @Before
+    @After
     public void setup() {
         DbManager.voidLocation.locationDao().deleteAll();
     }
 
-
+    /**
+     *  We test whether an entry can be added to the database and whether it is also displayed in the list
+     */
     @Test
-    public void AddNewEntryTest() {
+    public void addNewEntryTest() {
 
         onView(withId(R.id.btn_add_location)).perform(click());
 
@@ -67,7 +59,7 @@ public class AddNewEntryTest {
         onView(withId(R.id.locationDescription)).perform(typeText("blablablablabla"));
         Espresso.closeSoftKeyboard();
 
-        // Choose category
+        // choose category
         /*
         String selectionText = "Busy Place";
         onView(withId(R.id.categorySelector)).perform(click());
@@ -103,7 +95,11 @@ public class AddNewEntryTest {
         }
     }
 
-    // set progress as a value in SeekBar
+    /**
+     * Set the value from Seekbar
+     *
+     * @param progress In our case it should be between 0 and 3.
+     */
     public static ViewAction setProgress(final int progress) {
         return new ViewAction() {
             @Override
