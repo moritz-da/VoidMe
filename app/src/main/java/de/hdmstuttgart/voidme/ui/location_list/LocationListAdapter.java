@@ -20,7 +20,7 @@ import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.ui.di.Helper;
 
 /**
- *
+ *  Adapter class for recyclerview in navigation list view.
  */
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
     private static final String TAG = "-LOCATION_ADAPTER-";
@@ -81,7 +81,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
             locationItemLongitude =  itemView.findViewById(R.id.itemLongitude);
 
             itemView.setOnClickListener(v -> {
-                Toast.makeText(v.getContext(), "Clicked: " + list.get(getLayoutPosition()).getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Category: " + list.get(getLayoutPosition()).getCategory(), Toast.LENGTH_SHORT).show();
             });
         }
     }

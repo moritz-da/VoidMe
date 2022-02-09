@@ -24,6 +24,10 @@ import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.shared.utils.ui.ItemSpaceDecorator;
 
+
+/**
+ *  LocationListFragment defines base functions of list view screen.
+ */
 public class LocationListFragment extends Fragment {
 
     private static final String TAG = "-LIST-";
@@ -86,10 +90,18 @@ public class LocationListFragment extends Fragment {
         setUpItemTouchHelper();
     }
 
+    /**
+     * These callbacks are triggered when a recyclerview item is moved or swiped.
+     * This is where we can set the functionality. In this case, we only use the
+     * onSwiped callback to delete the swiped item.
+     */
     private void setUpItemTouchHelper() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -107,9 +119,8 @@ public class LocationListFragment extends Fragment {
 
     private void search(String title) {
         Log.d(TAG, "Input: " + title);
-        int s = foundLocations.size();
         foundLocations.clear();
-        adapter.notifyItemRangeRemoved(0, s);
+        adapter.notifyItemRangeRemoved(0, foundLocations.size());
         foundLocations.addAll(DbManager.voidLocation.locationDao().searchLocation("%" + title +"%"));
         if(foundLocations.size() > 0) {
             adapter.notifyItemRangeChanged(0, foundLocations.size());
