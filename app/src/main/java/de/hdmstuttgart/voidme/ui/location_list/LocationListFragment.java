@@ -137,13 +137,16 @@ public class LocationListFragment extends Fragment {
                 Log.d(TAG, "found List:" + foundLocations.toString());
             } else {
                 Toast.makeText(getContext(), "No Items found!", Toast.LENGTH_SHORT).show();
-                handleRecyclerViewState((View) recView.getParent());
             }
+            handleRecyclerViewState((View) recView.getParent());
         }
         else {
+            int s = foundLocations.size();
             foundLocations.clear();
+            adapter.notifyItemRangeRemoved(0, s);
             foundLocations.addAll(DbManager.voidLocation.locationDao().getAll());
             adapter.notifyItemRangeChanged(0, foundLocations.size());
+            handleRecyclerViewState((View) recView.getParent());
         }
     }
 
