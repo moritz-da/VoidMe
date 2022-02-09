@@ -9,6 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import java.util.Objects;
+
+import de.hdmstuttgart.voidme.R;
+
 /**
  * Abstract class defines base settings of preference fragment screens.
  */
@@ -36,7 +40,11 @@ public abstract class PreferenceFragment extends PreferenceFragmentCompat implem
         Preference preference = this.findPreference(getFragmentTag());
         String actionBarTitle = "";
         if (preference != null) {
-            actionBarTitle = preference.getTitle().toString();
+            try {
+                actionBarTitle = Objects.requireNonNull(preference.getTitle()).toString();
+            } catch (NullPointerException ex) {
+                actionBarTitle = getString(R.string.activity_settings_title);
+            }
         }
         ((SettingsActivity) requireActivity()).setActionBarTitle(actionBarTitle);
     }

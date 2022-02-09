@@ -15,6 +15,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
 import de.hdmstuttgart.voidme.R;
+import de.hdmstuttgart.voidme.ui.di.Helper;
 
 /**
  * Manage preferences
@@ -23,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static final String TAG = "-PREF-";
     private ActionBar actionBar;
     private int unlockCount = 5;
-    private Toast mToast;
+    public static Toast mToast;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String DEV_UNLOCK = "devUnlock";
 
@@ -39,11 +40,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 Log.d(TAG, "Fragment not found by tag, creating new.");
                 fragment = new PreferencesFragment();
             }
-
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.settings, fragment, PreferencesFragment.FRAGMENT_TAG);
             ft.commit();
         }
+        //set action bar up btn to navigate back through all preference screens
         actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -59,12 +60,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
             if (preferenceScreen.getKey().equals(getString(R.string.developer_key)) && unlockCount >= 0) {
                 if (unlockCount == 0) {
-                    showToast("Unlocked!");
+                    Helper.showToast(mToast,"Unlocked!", Toast.LENGTH_SHORT, this);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean(DEV_UNLOCK, true);
                     editor.apply();
                 } else {
-                    showToast("Unlocked in " + unlockCount);
+                    Helper.showToast(mToast,"Unlocked in " + unlockCount, Toast.LENGTH_SHORT, this);
                     unlockCount--;
                     return false;
                 }
@@ -104,15 +105,5 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             return super.onSupportNavigateUp();
         }
         return true;
-    }
-
-    /**
-     * Displays toasts on the same activity and cancels already existing.
-     * @param text The text of the toast
-     */
-    private void showToast(String text) {
-        if (mToast != null) mToast.cancel();
-        mToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        mToast.show();
     }
 }

@@ -109,7 +109,7 @@
                 android:persistent="false"
                 android:selectable="false"
                 android:summary=""
-                android:title="you can omit the title" />
+                android:title="Stay calm, we don't process your data!" />
 
         </PreferenceScreen>
         <Preference

@@ -25,6 +25,7 @@ import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.database.DbManager;
 import de.hdmstuttgart.voidme.database.LocationEntity;
 import de.hdmstuttgart.voidme.shared.utils.ui.ItemSpaceDecorator;
+import de.hdmstuttgart.voidme.ui.di.Helper;
 
 
 /**
@@ -35,6 +36,7 @@ public class LocationListFragment extends Fragment {
     private static final String TAG = "-LIST-";
     private LocationListAdapter adapter;
     private RecyclerView recView;
+    public static Toast mToast;
     List<LocationEntity> foundLocations = new ArrayList<>();
     RecyclerView.AdapterDataObserver observer;
 
@@ -110,7 +112,7 @@ public class LocationListFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                Toast.makeText(getContext(), "Deleted: " + foundLocations.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                Helper.showToast(mToast, "Deleted: " + foundLocations.get(position).getTitle(), Toast.LENGTH_SHORT, getContext());
                 adapter.deleteItem(position);
                 handleRecyclerViewState((View) recView.getParent());
             }
@@ -119,6 +121,10 @@ public class LocationListFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recView);
     }
 
+    /**
+     *
+     * @param title
+     */
     private void search(String title) {
         if (!title.isEmpty()) {
             Log.d(TAG, "Input: " + title);

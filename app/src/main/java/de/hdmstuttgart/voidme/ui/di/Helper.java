@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -19,6 +20,17 @@ import de.hdmstuttgart.voidme.R;
 import de.hdmstuttgart.voidme.shared.utils.ui.DrawHelper;
 
 public class Helper {
+
+    /**
+     * Displays toasts on the same activity and cancels already existing.
+     * @param text The text of the toast
+     */
+    public static void showToast(Toast mToast, String text, int length, Context context) {
+        if (mToast != null) mToast.cancel();
+        mToast = Toast.makeText(context, text, length);
+        mToast.show();
+    }
+
     /**
      * Mapping for categories and their icons
      * @param category The category suiting a specific icon.

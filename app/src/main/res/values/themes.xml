@@ -19,8 +19,5 @@
         <item name="android:textColor">@color/text</item>
         <item name="android:windowBackground">@color/backgroundAlt</item>
         <item name="android:colorBackgroundFloating">@color/backgroundAlt</item>
-
-
-
     </style>
 </resources>

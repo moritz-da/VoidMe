@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -56,7 +57,6 @@ public class MapFragment extends Fragment {
     public List<Marker> markerList = new ArrayList<>();
     public List<CircleOptions> circleList = new ArrayList<>();
     private List<LocationEntity> closeLocations;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
 
 
@@ -164,7 +164,8 @@ public class MapFragment extends Fragment {
                     m.setVisible(googleMap.getCameraPosition().zoom > 8);
                 }
             });
-            /*TODO https://developer.android.com/training/location/permissions#background
+            /*TODO Feature nearby VoidLocations:
+            https://developer.android.com/training/location/permissions#background
             if notification for close areas on <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
             https://stackoverflow.com/questions/45747796/android-how-to-show-nearby-user-markers*/
         }
@@ -215,12 +216,7 @@ public class MapFragment extends Fragment {
         if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // In an educational UI, explain to the user why your app requires this
-            // permission for a specific feature to behave as expected. In this UI,
-            // include a "cancel" or "no thanks" button that allows the user to
-            // continue using your app without granting the permission.
-            //showInContextUI(...);
-            //TODO rational dialog
+            Toast.makeText(getContext(), R.string.permission_explanation, Toast.LENGTH_LONG).show();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
@@ -236,10 +232,8 @@ public class MapFragment extends Fragment {
                     locationPermissionGranted = true;
                     getDeviceLocation();
                 } else {
-                    //TODO
-                    // Explain to the user that the feature is unavailable because the
-                    // features require a permission that the user has denied. At the
-                    // same time, respect the user's decision.
+                    Log.i(TAG, "...permission denied");
+                    Toast.makeText(getContext(), R.string.permission_denied_dialog, Toast.LENGTH_LONG).show();
                 }
                 updateLocationUI(false);
             });
@@ -298,9 +292,9 @@ public class MapFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-        //Add location dialog
         /*
-        TODO if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
+        TODO FloatingButton: if (addBtn != null) DialogFactory.create(NAME)handleNewLocationEntry(addBtn, view);
+        //Add location dialog
         View addBtn = view.findViewById(R.id.saveCurrentLocation);
         if (addBtn != null) {
             //Dialog dialog = DialogFactory.create(DialogFactory.LOCATION_ENTRY_DIALOG, view, getContext(), getActivity());
