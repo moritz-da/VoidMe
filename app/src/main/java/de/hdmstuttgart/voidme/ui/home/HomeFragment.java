@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "-HOME-";
     private FragmentHomeBinding binding;
     private boolean permissionsGranted = false;
+    private BottomSheetDialog bottomSheetDialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -70,7 +71,8 @@ public class HomeFragment extends Fragment {
         Button addBtn = view.findViewById(R.id.btn_add_location);
         if (addBtn != null) {
             addBtn.setOnClickListener(v -> {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+                checkPermission();
+                bottomSheetDialog = new BottomSheetDialog(
                         this.requireContext(),
                         R.style.SheetDialog
                 );
@@ -111,20 +113,23 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    private void saveEntry(String title, String description, String category, String severity) {
-        Log.i(TAG, "Saving new Entry...");
+    private void checkPermission() {
         // check permission
         if (ActivityCompat.checkSelfPermission(requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             permissionsGranted = true;
         } else {
+            permissionsGranted = false;
             Log.i(TAG, "...permission not granted...");
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Toast.makeText(getContext(), R.string.permission_explanation, Toast.LENGTH_LONG).show();
             }
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
+    }
 
+    private void saveEntry(String title, String description, String category, String severity) {
+        Log.i(TAG, "Saving new Entry...");
         if (permissionsGranted) {
             Log.i(TAG, "...permission granted...");
             SaveEntryTask saveEntryTask = new SaveEntryTask(getActivity());
@@ -138,6 +143,7 @@ public class HomeFragment extends Fragment {
                     permissionsGranted = true;
                 } else {
                     Log.i(TAG, "...permission denied");
+                    bottomSheetDialog.dismiss();
                     Toast.makeText(getContext(), R.string.permission_denied_dialog, Toast.LENGTH_LONG).show();
                 }
             });
